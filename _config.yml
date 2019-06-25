@@ -80,3 +80,4 @@ theme: yilia
 deploy:
   type: git
   repo: https://github.com/weiyuanke/weiyuanke.github.io.git
+  branch: master
