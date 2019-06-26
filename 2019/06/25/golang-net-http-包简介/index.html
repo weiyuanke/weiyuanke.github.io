@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="Kubernetes的Api Server中用到了golang的http包，故而做下简单的了解。 12345678910111213141516171819202122package mainimport (	&quot;fmt&quot;	&quot;io&quot;	&quot;net/http&quot;)func main() &amp;#123;	http.HandleFunc(&quot;/&quot;, helloworld)	err := http.ListenAnd">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-06-25T15:51:43.947Z">
+<meta property="og:updated_time" content="2019-06-26T06:08:41.468Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="golang net&#x2F;http 包简介">
 <meta name="twitter:description" content="Kubernetes的Api Server中用到了golang的http包，故而做下简单的了解。 12345678910111213141516171819202122package mainimport (	&quot;fmt&quot;	&quot;io&quot;	&quot;net/http&quot;)func main() &amp;#123;	http.HandleFunc(&quot;/&quot;, helloworld)	err := http.ListenAnd">
@@ -329,12 +329,24 @@
                 
               
 
-              <time title="Created: 2019-06-25 23:28:54 / Modified: 23:51:43" itemprop="dateCreated datePublished" datetime="2019-06-25T23:28:54+08:00">2019-06-25</time>
+              <time title="Created: 2019-06-25 23:28:54" itemprop="dateCreated datePublished" datetime="2019-06-25T23:28:54+08:00">2019-06-25</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-06-26 14:08:41" itemprop="dateModified" datetime="2019-06-26T14:08:41+08:00">2019-06-26</time>
               
             
           </span>
@@ -376,6 +388,11 @@
 
 <p>会给出如下的输出</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HelloWorld</span><br><span class="line">RequestURI: /?we=12</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//第一个参数是监听的地址和端口</span><br><span class="line">//第二个参数是一个Handler，实现了ServeHTTP(ResponseWriter, *Request)方法，</span><br><span class="line">//客户端的请求会交由这个方法进行处理。</span><br><span class="line">//如果传nil的话，会采用http包默认的handler，DefaultServeMux来进行处理。</span><br><span class="line">//DefaultServeMux可以认为是一个路由管理器，</span><br><span class="line">//它的ServeHTTP方法实现 会根据客户端请求的路径来将请求路由到不同的HandlerFunc上去。</span><br><span class="line">http.ListenAndServe(&quot;:9090&quot;, nil)</span><br><span class="line"></span><br><span class="line">//为DefaultServeMux注册一个HandleFunc</span><br><span class="line">http.HandleFunc(&quot;/&quot;, helloworld)</span><br><span class="line"></span><br><span class="line">具体的代码：</span><br><span class="line">// HandleFunc registers the handler function for the given pattern</span><br><span class="line">// in the DefaultServeMux.</span><br><span class="line">// The documentation for ServeMux explains how patterns are matched.</span><br><span class="line">func HandleFunc(pattern string, handler func(ResponseWriter, *Request)) &#123;</span><br><span class="line">	DefaultServeMux.HandleFunc(pattern, handler)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除了采用默认的路由分发器DefaultServeMux，也可以构建自己的Mux，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">	&quot;io&quot;</span><br><span class="line">	&quot;net/http&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	//新建一个路由管理器，</span><br><span class="line">	mux := http.NewServeMux()</span><br><span class="line">	//绑定路径和处理函数</span><br><span class="line">	mux.HandleFunc(&quot;/&quot;, helloworld)</span><br><span class="line"></span><br><span class="line">	server := &amp;http.Server&#123;</span><br><span class="line">		Addr:&quot;:9090&quot;,</span><br><span class="line">		Handler:mux,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	server.ListenAndServe()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func helloworld(w http.ResponseWriter, request *http.Request) &#123;</span><br><span class="line">	result := &quot;HelloWorld\n&quot;</span><br><span class="line">	result = result + &quot;RequestURI: &quot; + request.RequestURI</span><br><span class="line"></span><br><span class="line">	io.WriteString(w, result)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
 
