@@ -5,7 +5,6 @@ tags:
 	- kubernetes
 ---
 
-看完之后收获很大，故而分享出来，希望更多人看到。
+google xuchao的介绍，看完之后收获很大，故而分享出来，希望更多人看到。
 
-
-{% dplayer "url=https://v.qq.com/txp/iframe/player.html?vid=c03641vzw2m" "theme=#FADFA3" "autoplay=false" "token=tokendemo" %}
+[腾讯视频地址](https://v.qq.com/txp/iframe/player.html?vid=c03641vzw2m)
