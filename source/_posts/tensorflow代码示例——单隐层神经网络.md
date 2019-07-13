@@ -88,6 +88,69 @@ with tf.Session() as sess:
 
 
 
+###
+2019-07-13 12:05:25.725879: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+
+[[-0.8113182   1.4845988   0.06532937]
+ [-2.4427042   0.0992484   0.5912243 ]]
+[[-0.8113182 ]
+ [ 1.4845988 ]
+ [ 0.06532937]]
+after 0 training step, cross entropy is 1.89805
+after 100 training step, cross entropy is 1.62943
+after 200 training step, cross entropy is 1.40099
+after 300 training step, cross entropy is 1.19732
+after 400 training step, cross entropy is 1.02375
+after 500 training step, cross entropy is 0.887612
+after 600 training step, cross entropy is 0.790222
+after 700 training step, cross entropy is 0.727325
+after 800 training step, cross entropy is 0.689437
+after 900 training step, cross entropy is 0.667623
+after 1000 training step, cross entropy is 0.655075
+after 1100 training step, cross entropy is 0.647813
+after 1200 training step, cross entropy is 0.643196
+after 1300 training step, cross entropy is 0.639896
+after 1400 training step, cross entropy is 0.637246
+after 1500 training step, cross entropy is 0.635031
+after 1600 training step, cross entropy is 0.633027
+after 1700 training step, cross entropy is 0.631151
+after 1800 training step, cross entropy is 0.629368
+after 1900 training step, cross entropy is 0.627724
+after 2000 training step, cross entropy is 0.626172
+after 2100 training step, cross entropy is 0.624696
+after 2200 training step, cross entropy is 0.623293
+after 2300 training step, cross entropy is 0.622006
+after 2400 training step, cross entropy is 0.620801
+after 2500 training step, cross entropy is 0.619664
+after 2600 training step, cross entropy is 0.618592
+after 2700 training step, cross entropy is 0.617622
+after 2800 training step, cross entropy is 0.616723
+after 2900 training step, cross entropy is 0.615883
+after 3000 training step, cross entropy is 0.615096
+after 3100 training step, cross entropy is 0.614397
+after 3200 training step, cross entropy is 0.613756
+after 3300 training step, cross entropy is 0.61316
+after 3400 training step, cross entropy is 0.612608
+after 3500 training step, cross entropy is 0.612126
+after 3600 training step, cross entropy is 0.611689
+after 3700 training step, cross entropy is 0.611285
+after 3800 training step, cross entropy is 0.610913
+after 3900 training step, cross entropy is 0.610594
+after 4000 training step, cross entropy is 0.610309
+after 4100 training step, cross entropy is 0.610046
+after 4200 training step, cross entropy is 0.609804
+after 4300 training step, cross entropy is 0.609603
+after 4400 training step, cross entropy is 0.609423
+after 4500 training step, cross entropy is 0.609258
+after 4600 training step, cross entropy is 0.609106
+after 4700 training step, cross entropy is 0.608983
+after 4800 training step, cross entropy is 0.608874
+after 4900 training step, cross entropy is 0.608772
+[[ 0.02476983  0.56948674  1.6921941 ]
+ [-2.1977348  -0.23668921  1.1143895 ]]
+[[-0.45544702]
+ [ 0.49110925]
+ [-0.98110336]]
 
 
 
