@@ -282,6 +282,148 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/13/tensorflow代码示例——单隐层神经网络/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="韦远科">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/13/tensorflow代码示例——单隐层神经网络/" class="post-title-link" itemprop="url">tensorflow代码示例——单隐层神经网络</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-13 12:03:10 / Modified: 12:04:12" itemprop="dateCreated datePublished" datetime="2019-07-13T12:03:10+08:00">2019-07-13</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">#coding: utf-8</span><br><span class="line">import tensorflow as tf</span><br><span class="line">from numpy.random import RandomState</span><br><span class="line"></span><br><span class="line">#每轮训练输入的数据量</span><br><span class="line">batch_size = 8</span><br><span class="line"></span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">含有一个隐藏层的神经网络</span><br><span class="line">输入层                           隐藏层                              输出层</span><br><span class="line">                                 A1</span><br><span class="line">                           </span><br><span class="line">                  </span><br><span class="line"></span><br><span class="line">(X1)</span><br><span class="line">          </span><br><span class="line">            </span><br><span class="line">                                 A2                                   Y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(X2)</span><br><span class="line"></span><br><span class="line">                                 A3</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line"></span><br><span class="line">#w1是输入层和隐藏层之前的全连接权重, 相应的w2是隐藏层和输出层之间的连接权重</span><br><span class="line">#这里采用tensorflow内置的随机正态分布对连接权重进行初始化</span><br><span class="line">w1 = tf.Variable(tf.random_normal([2, 3], stddev=1, seed=1))</span><br><span class="line">w2 = tf.Variable(tf.random_normal([3, 1], stddev=1, seed=1))</span><br><span class="line"></span><br><span class="line">#定义输入数据的占位</span><br><span class="line">x = tf.placeholder(tf.float32, shape=(None, 2), name=&quot;x-input&quot;)</span><br><span class="line">y_= tf.placeholder(tf.float32, shape=(None, 1), name=&quot;y-input&quot;)</span><br><span class="line"></span><br><span class="line">#定义神经网络的前向传播过程</span><br><span class="line">a = tf.matmul(x, w1)</span><br><span class="line">y = tf.matmul(a, w2)</span><br><span class="line"></span><br><span class="line">#采用sigmoid激活函数</span><br><span class="line">y = tf.sigmoid(y)</span><br><span class="line"></span><br><span class="line">#采用交叉墒损失函数(y 和 y_ 之前的差距，其中y是神经网络的预测值，y_是实际值)</span><br><span class="line">#clip_by_value对变量的值做上下限处理，将其限制在某个范围内</span><br><span class="line">val = y_ * tf.log(tf.clip_by_value(y, 1e-10, 1.0)) + (1 - y_) * tf.log(tf.clip_by_value(1-y, 1e-10, 1.0))</span><br><span class="line">cross_entropy = -tf.reduce_mean(val)</span><br><span class="line"></span><br><span class="line">#反向传播优化方法，除了AdamOptimizer之外，常用的还有GradientDescentOptimizer MomentumOptimizer</span><br><span class="line">#0.001是学习率，学习的目标就是最小化损失函数</span><br><span class="line">train_step = tf.train.AdamOptimizer(0.001).minimize(cross_entropy)</span><br><span class="line"></span><br><span class="line">#接下来我们造一点训练数据</span><br><span class="line">rdm = RandomState(1)</span><br><span class="line">dataset_size = 128 #128 组训练数据</span><br><span class="line">X = rdm.rand(dataset_size, 2) #随机出来的训练数据输入</span><br><span class="line">Y = [[int(x1+x2&lt;1)] for (x1,x2) in X] #训练数据期望的输出</span><br><span class="line"></span><br><span class="line">#运行整个训练过程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    sess.run(tf.global_variables_initializer()) #初始化所有的变量</span><br><span class="line"></span><br><span class="line">    #变量初始化之后，看下w1和w2的当前值</span><br><span class="line">    print sess.run(w1)</span><br><span class="line">    print sess.run(w2)</span><br><span class="line"></span><br><span class="line">    #迭代5000次</span><br><span class="line">    for i in range(5000):</span><br><span class="line">        #每次采用batch_size组数据进行训练</span><br><span class="line">        start = (i*batch_size) % dataset_size</span><br><span class="line">        end = min(start + batch_size, dataset_size)</span><br><span class="line"></span><br><span class="line">        sess.run(train_step, feed_dict=&#123;x: X[start:end], y_:Y[start:end]&#125;)</span><br><span class="line"></span><br><span class="line">        #每100轮输出一下当前的训练结果：W1和W2和交叉墒</span><br><span class="line">        if i % 100 == 0:</span><br><span class="line">            total_entropy = sess.run(cross_entropy, feed_dict=&#123;x:X, y_:Y&#125;)</span><br><span class="line">            print(&quot;after %d training step, cross entropy is %g&quot; % (i, total_entropy))</span><br><span class="line"></span><br><span class="line">    print sess.run(w1)</span><br><span class="line">    print sess.run(w2)</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/03/Kubernetes三种Client的使用示例/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1208,7 +1350,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-count">7</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -1227,7 +1369,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">2</span>
+                      
+                    
+                    <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">tags</span>
                   
                 </div>
