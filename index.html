@@ -282,6 +282,167 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/15/kube-scheduler源码走读/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="韦远科">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/15/kube-scheduler源码走读/" class="post-title-link" itemprop="url">kube-scheduler源码走读</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-15 12:20:36 / Modified: 12:21:43" itemprop="dateCreated datePublished" datetime="2019-07-15T12:20:36+08:00">2019-07-15</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>kube-scheduler是k8s中相对比较简单的一个服务，它监听api server获取新建的Pod，从众多的Node中选择一个合适的，来运行该Pod。</p>
+<p>选择的过程分两个阶段：预选阶段 &amp; 优选阶段</p>
+<ul>
+<li>预选阶段：根据Pod创建的要求，筛选出所有符合要求的Node，通过该阶段的Node理论上都可以运行目标Pod</li>
+<li>优选阶段：给上一步筛选出来的Node打分，选择一个分数最高的Node</li>
+</ul>
+<p>本文简单的跟进一下kube-scheduler执行的整个流程。</p>
+<p>入口代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">#cmd/kube-scheduler/app/server.go:62</span><br><span class="line">#同样基于cobra包开发，</span><br><span class="line">	cmd := &amp;cobra.Command&#123;</span><br><span class="line">		Use: &quot;kube-scheduler&quot;,</span><br><span class="line">		Long: `The Kubernetes scheduler is a policy-rich, topology-aware,</span><br><span class="line">workload-specific function that significantly impacts availability, performance,</span><br><span class="line">and capacity. The scheduler needs to take into account individual and collective</span><br><span class="line">resource requirements, quality of service requirements, hardware/software/policy</span><br><span class="line">constraints, affinity and anti-affinity specifications, data locality, inter-workload</span><br><span class="line">interference, deadlines, and so on. Workload-specific requirements will be exposed</span><br><span class="line">through the API as necessary.`,</span><br><span class="line">		Run: func(cmd *cobra.Command, args []string) &#123;</span><br><span class="line">			if err := runCommand(cmd, args, opts); err != nil &#123;</span><br><span class="line">				fmt.Fprintf(os.Stderr, &quot;%v\n&quot;, err)</span><br><span class="line">				os.Exit(1)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// runCommand runs the scheduler.</span><br><span class="line">func runCommand(cmd *cobra.Command, args []string, opts *options.Options) error &#123;</span><br><span class="line">	//构建调度所需的配置文件：主要包括kubeclient、eventclient、</span><br><span class="line">	cc, err := opts.Config()</span><br><span class="line"></span><br><span class="line">	stopCh := make(chan struct&#123;&#125;)</span><br><span class="line"></span><br><span class="line">	//根据当前的feature gates对调度的算法做一些裁剪</span><br><span class="line">	// Apply algorithms based on feature gates.</span><br><span class="line">	// TODO: make configurable?</span><br><span class="line">	algorithmprovider.ApplyFeatureGates()</span><br><span class="line"></span><br><span class="line">	//启动调度服务</span><br><span class="line">	return Run(cc, stopCh)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继续看Run函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">// Run executes the scheduler based on the given configuration. It only return on error or when stopCh is closed.</span><br><span class="line">func Run(cc schedulerserverconfig.CompletedConfig, stopCh &lt;-chan struct&#123;&#125;) error &#123;</span><br><span class="line">	// Create the scheduler.</span><br><span class="line">	//构造一个scheduler，（Scheduler），</span><br><span class="line">	//构造调度的预选策略列表、优选策略列表、为各个informer关联handler处理函数</span><br><span class="line">	sched, err := scheduler.New(cc.Client, ...,</span><br><span class="line"></span><br><span class="line">	// Start all informers.</span><br><span class="line">	//启动各个infomer，监听相关的变化</span><br><span class="line">	go cc.PodInformer.Informer().Run(stopCh)</span><br><span class="line">	cc.InformerFactory.Start(stopCh)</span><br><span class="line"></span><br><span class="line">	// Wait for all caches to sync before scheduling.</span><br><span class="line">	cc.InformerFactory.WaitForCacheSync(stopCh)</span><br><span class="line"></span><br><span class="line">	// Prepare a reusable runCommand function.</span><br><span class="line">	run := func(ctx context.Context) &#123;</span><br><span class="line">		sched.Run()</span><br><span class="line">		&lt;-ctx.Done()</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	ctx, cancel := context.WithCancel(context.TODO()) // TODO once Run() accepts a context, it should be used here</span><br><span class="line">	defer cancel()</span><br><span class="line"></span><br><span class="line">	go func() &#123;</span><br><span class="line">		select &#123;</span><br><span class="line">		case &lt;-stopCh:</span><br><span class="line">			cancel()</span><br><span class="line">		case &lt;-ctx.Done():</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	// Leader election is disabled, so runCommand inline until done.</span><br><span class="line">	run(ctx)</span><br><span class="line">	return fmt.Errorf(&quot;finished without leader elect&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里边重要的函数就两个，</p>
+<p>一个是scheduler.New（） 构建了一个Scheduler对象，关联了各个informer的动作；</p>
+<p>一个是run(ctx)，启动调度服务，run(ctx)最终会调用函数：scheduleOne；</p>
+<p>先看下scheduleOne函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// scheduleOne does the entire scheduling workflow for a single pod.  It is serialized on the scheduling algorithm&apos;s host fitting.</span><br><span class="line">func (sched *Scheduler) scheduleOne() &#123;</span><br><span class="line">	//从待调度队列中拿到一个需要调度的Pod</span><br><span class="line">	pod := sched.config.NextPod()</span><br><span class="line">	// pod could be nil when schedulerQueue is closed</span><br><span class="line">	if pod == nil &#123;</span><br><span class="line">		return</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//采用调度算法选择一个合适的Node来运行该Pod</span><br><span class="line">	scheduleResult, err := sched.schedule(pod)</span><br><span class="line"></span><br><span class="line">	assumedPod := pod.DeepCopy()</span><br><span class="line">	</span><br><span class="line">	#根据调度结果scheduleResult， 将pod绑定到对应的Node上</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/13/tensorflow代码示例——单隐层神经网络/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1350,7 +1511,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">7</span>
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
