@@ -81,3 +81,9 @@ deploy:
   type: git
   repo: https://github.com/weiyuanke/weiyuanke.github.io.git
   branch: master
+
+# `Follow me on GitHub` banner in the top-right corner.
+github_banner:
+  enable: true
+  permalink: https://github.com/weiyuanke
+  title: Follow me on GitHub
