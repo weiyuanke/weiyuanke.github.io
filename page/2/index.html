@@ -279,6 +279,161 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/02/DEMO：基于Kubernetes的CRD-Go-client-构建的一个查询pod详细信息的示例/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="韦远科">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="韦远科的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/02/DEMO：基于Kubernetes的CRD-Go-client-构建的一个查询pod详细信息的示例/" class="post-title-link" itemprop="url">DEMO：基于Kubernetes的CRD & Go-client 构建的一个查询pod详细信息的示例</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-02 11:49:32 / Modified: 16:41:21" itemprop="dateCreated datePublished" datetime="2019-07-02T11:49:32+08:00">2019-07-02</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>本文是一个示例程序，展示一下如何基于Kubernetes的CRD（Custom Resource Defination）&amp; Go-client构建一个查询Pod详细信息的服务。</p>
+<p>该服务运行起来后，可以通过标准的kubernetes api接口，基于CRD来查询某个Pod的详细信息。</p>
+<p>代码的地址在：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/weiyuanke/PodInfoLookup</span><br></pre></td></tr></table></figure>
+
+<p>首先我们基于配置文件创建一个我们自定义的资源——Testcr</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#PodInfoLookup/yaml/testcrd.yaml</span><br><span class="line"></span><br><span class="line">#创建了一个名为Testcr的自定义资源类型</span><br><span class="line">#group：stable.example.com</span><br><span class="line">#version：v1</span><br><span class="line">#resource：testcrs</span><br><span class="line">$kubectl apply -f yaml/testcrd.yaml</span><br></pre></td></tr></table></figure>
+
+<p>本文假定本地已经有一个kubernetes集群在运行了，如果没有的话，可以基于minikube安装一个。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#拉取最新代码：</span><br><span class="line">go get github.com/weiyuanke/PodInfoLookup</span><br><span class="line"></span><br><span class="line">#启动服务</span><br><span class="line">go run main.go --kubeconfig=/Users/yuankewei/.kube/config</span><br></pre></td></tr></table></figure>
+
+<p>在另外一个终端创建一个pod</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f yaml/pod.yaml </span><br><span class="line"></span><br><span class="line">#服务会监听到pod的创建，同时将该pod的相关信息写入Testcr资源中，</span><br><span class="line">add:  default/nginx</span><br><span class="line"></span><br><span class="line">current list:</span><br><span class="line">&amp;&#123;map[kind:Testcr metadata:map[generation:1 name:29b36e2c6835dded8a115aee874d1ddc resourceVersion:113140 selfLink:/apis/stable.example.com/v1/testcrs/29b36e2c6835dded8a115aee874d1ddc uid:a2440f67-9ca4-11e9-9f23-080027f1737d creationTimestamp:2019-07-02T08:37:32Z] spec:map[podip:nginx podkey:a242bc2d-9ca4-11e9-9f23-080027f1737d podname:29b36e2c6835dded8a115aee874d1ddc poduid:] apiVersion:stable.example.com/v1]&#125;</span><br><span class="line"></span><br><span class="line">#同理，删除pod，会导致Testrc中对应的资源被删除</span><br><span class="line">kubectl delete -f yaml/pod.yaml </span><br><span class="line"></span><br><span class="line">delete:  default/nginx</span><br><span class="line"></span><br><span class="line">current list:</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+
+    
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/01/Custom-Resource-Definition/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -758,7 +913,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">9</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -779,7 +934,9 @@
         
           
         
-        <span class="site-state-item-count">3</span>
+          
+        
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">tags</span>
         
       </div>
