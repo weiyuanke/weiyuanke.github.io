@@ -94,18 +94,13 @@
 
 
 
-  <meta name="description" content="Kubernetes的Api Server中用到了golang的http包，故而做下简单的了解。 12345678910111213141516171819202122package mainimport (	&quot;fmt&quot;	&quot;io&quot;	&quot;net/http&quot;)func main() &amp;#123;	http.HandleFunc(&quot;/&quot;, helloworld)	err := http.ListenAnd">
-<meta name="keywords" content="golang">
-<meta property="og:type" content="article">
-<meta property="og:title" content="golang net&#x2F;http 包简介">
-<meta property="og:url" content="http://yoursite.com/2019/06/25/golang-net-http-包简介/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="韦远科的博客">
+<meta property="og:url" content="http://yoursite.com/page/2/index.html">
 <meta property="og:site_name" content="韦远科的博客">
-<meta property="og:description" content="Kubernetes的Api Server中用到了golang的http包，故而做下简单的了解。 12345678910111213141516171819202122package mainimport (	&quot;fmt&quot;	&quot;io&quot;	&quot;net/http&quot;)func main() &amp;#123;	http.HandleFunc(&quot;/&quot;, helloworld)	err := http.ListenAnd">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-06-26T06:08:41.469Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="golang net&#x2F;http 包简介">
-<meta name="twitter:description" content="Kubernetes的Api Server中用到了golang的http包，故而做下简单的了解。 12345678910111213141516171819202122package mainimport (	&quot;fmt&quot;	&quot;io&quot;	&quot;net/http&quot;)func main() &amp;#123;	http.HandleFunc(&quot;/&quot;, helloworld)	err := http.ListenAnd">
+<meta name="twitter:title" content="韦远科的博客">
 
 
 
@@ -113,7 +108,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/06/25/golang-net-http-包简介/">
+  <link rel="canonical" href="http://yoursite.com/page/2/">
 
 
 
@@ -123,7 +118,7 @@
   };
 </script>
 
-  <title>golang net/http 包简介 | 韦远科的博客</title>
+  <title>韦远科的博客</title>
   
 
 
@@ -171,7 +166,8 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -269,9 +265,293 @@
           
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
+  <section id="posts" class="posts-expand">
     
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/01/Custom-Resource-Definition/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="韦远科">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="韦远科的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/01/Custom-Resource-Definition/" class="post-title-link" itemprop="url">Custom Resource Definition简介</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-01 14:33:30 / Modified: 16:44:26" itemprop="dateCreated datePublished" datetime="2019-07-01T14:33:30+08:00">2019-07-01</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>1、什么是自定义资源（Custom Resource）？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">自定义资源是对kubernetes api的扩展，用户通过配置文件（Custom Resource Definition）</span><br><span class="line">定义 资源 后，就可以通过kubernetes的API来操作此类资源。</span><br><span class="line"></span><br><span class="line">仅仅通过API对资源进行操作其实意义不大，一般会再配合一个自定义的控制器，来实现一个声明式的</span><br><span class="line">API，在自定义的控制器中监听该资源相关的事件，并执行对应的业务逻辑。</span><br></pre></td></tr></table></figure>
+
+<p>2、自定义资源 -&gt; 自定义控制器的整个流程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">API server（包含有自定义资源） -&gt; Lister&amp;Watcher -&gt; Reflector -&gt; Delta Queue -&gt;</span><br><span class="line">Informer -&gt; 存入Indexer并同时触发相关的Handler -&gt; work queue -&gt; 自定义控制器</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/26/kubernetes-api-server-源码跟踪/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="韦远科">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="韦远科的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/06/26/kubernetes-api-server-源码跟踪/" class="post-title-link" itemprop="url">kubernetes api server 源码跟踪</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-06-26 14:15:31" itemprop="dateCreated datePublished" datetime="2019-06-26T14:15:31+08:00">2019-06-26</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
 
   
 
@@ -303,8 +583,10 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">golang net/http 包简介
-
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/06/25/golang-net-http-包简介/" class="post-title-link" itemprop="url">golang net/http 包简介</a>
               
             
           </h1>
@@ -380,7 +662,9 @@
       
 
       
-        <p>Kubernetes的Api Server中用到了golang的http包，故而做下简单的了解。</p>
+        
+          
+            <p>Kubernetes的Api Server中用到了golang的http包，故而做下简单的了解。</p>
 <figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"io"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.HandleFunc(<span class="string">"/"</span>, helloworld)</span><br><span class="line">	err := http.ListenAndServe(<span class="string">":9090"</span>, <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"ListenAndServe: "</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">helloworld</span><span class="params">(w http.ResponseWriter, request *http.Request)</span></span> &#123;</span><br><span class="line">	result := <span class="string">"HelloWorld\n"</span></span><br><span class="line">	result = result + <span class="string">"RequestURI: "</span> + request.RequestURI</span><br><span class="line"></span><br><span class="line">	io.WriteString(w, result)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>以上代码开启了一个简单的web服务，应用启动后访问如下地址：</p>
@@ -393,6 +677,8 @@
 
 <p>除了采用默认的路由分发器DefaultServeMux，也可以构建自己的Mux，如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">	&quot;io&quot;</span><br><span class="line">	&quot;net/http&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	//新建一个路由管理器，</span><br><span class="line">	mux := http.NewServeMux()</span><br><span class="line">	//绑定路径和处理函数</span><br><span class="line">	mux.HandleFunc(&quot;/&quot;, helloworld)</span><br><span class="line"></span><br><span class="line">	server := &amp;http.Server&#123;</span><br><span class="line">		Addr:&quot;:9090&quot;,</span><br><span class="line">		Handler:mux,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	server.ListenAndServe()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func helloworld(w http.ResponseWriter, request *http.Request) &#123;</span><br><span class="line">	result := &quot;HelloWorld\n&quot;</span><br><span class="line">	result = result + &quot;RequestURI: &quot; + request.RequestURI</span><br><span class="line"></span><br><span class="line">	io.WriteString(w, result)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
       
     </div>
 
@@ -413,39 +699,14 @@
 
     <footer class="post-footer">
       
-        
-          
-        
-        <div class="post-tags">
-          
-            <a href="/tags/golang/" rel="tag"># golang</a>
-          
-        </div>
+
+      
+
       
 
       
       
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/06/26/kubernetes-api-server-源码跟踪/" rel="prev" title="kubernetes api server 源码跟踪">
-                kubernetes api server 源码跟踪 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -455,15 +716,18 @@
   </article>
 
 
-  </div>
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
 
 
           </div>
           
-
-  
-
-
 
         </div>
         
@@ -675,10 +939,6 @@
 
 
   
-  <script src="/js/scrollspy.js?v=7.1.2"></script>
-<script src="/js/post-details.js?v=7.1.2"></script>
-
-
 
   
 
@@ -694,8 +954,6 @@
 
   
 
-
-  
 
 
   
