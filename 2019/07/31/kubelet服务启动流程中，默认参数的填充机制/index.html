@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css?v=7.2.0">
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    search: {
+      root: '/',
+      path: ''
+    },
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: 'Copy',
+      copy_success: 'Copied',
+      copy_failure: 'Copy failed'
+    }
+  };
+</script>
+
+  <meta name="description" content="本文跟踪一下kubelet启动过程中，参数的默认值是如何注入的。 我们知道，为了启动kubelet服务，首先要构造kubelet的配置对象，即kubeletconfig.KubeletConfiguration结构体， 12345678// NewKubeletCommand creates a *cobra.Command object with default parametersfunc N">
+<meta name="keywords" content="kubernetes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kubelet服务启动流程中，默认参数的填充机制">
+<meta property="og:url" content="http://yoursite.com/2019/07/31/kubelet服务启动流程中，默认参数的填充机制/index.html">
+<meta property="og:site_name" content="韦远科的博客">
+<meta property="og:description" content="本文跟踪一下kubelet启动过程中，参数的默认值是如何注入的。 我们知道，为了启动kubelet服务，首先要构造kubelet的配置对象，即kubeletconfig.KubeletConfiguration结构体， 12345678// NewKubeletCommand creates a *cobra.Command object with default parametersfunc N">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-07-31T07:16:04.224Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="kubelet服务启动流程中，默认参数的填充机制">
+<meta name="twitter:description" content="本文跟踪一下kubelet启动过程中，参数的默认值是如何注入的。 我们知道，为了启动kubelet服务，首先要构造kubelet的配置对象，即kubeletconfig.KubeletConfiguration结构体， 12345678// NewKubeletCommand creates a *cobra.Command object with default parametersfunc N">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/07/31/kubelet服务启动流程中，默认参数的填充机制/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  
+  <title>kubelet服务启动流程中，默认参数的填充机制 | 韦远科的博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">韦远科的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+      
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/31/kubelet服务启动流程中，默认参数的填充机制/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="韦远科">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="韦远科的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">kubelet服务启动流程中，默认参数的填充机制
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-31 10:28:15 / Modified: 15:16:04" itemprop="dateCreated datePublished" datetime="2019-07-31T10:28:15+08:00">2019-07-31</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文跟踪一下kubelet启动过程中，参数的默认值是如何注入的。</p>
+<p>我们知道，为了启动kubelet服务，首先要构造kubelet的配置对象，即kubeletconfig.KubeletConfiguration结构体，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// NewKubeletCommand creates a *cobra.Command object with default parameters</span><br><span class="line">func NewKubeletCommand() *cobra.Command &#123;</span><br><span class="line">	cleanFlagSet := pflag.NewFlagSet(componentKubelet, pflag.ContinueOnError)</span><br><span class="line">	cleanFlagSet.SetNormalizeFunc(cliflag.WordSepNormalizeFunc)</span><br><span class="line">	kubeletFlags := options.NewKubeletFlags()</span><br><span class="line">	#返回一个带有默认值的kubelet配置对象</span><br><span class="line">	kubeletConfig, err := options.NewKubeletConfiguration()</span><br><span class="line">	// programmer error</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">// NewKubeletConfiguration will create a new KubeletConfiguration with default values</span><br><span class="line">func NewKubeletConfiguration() (*kubeletconfig.KubeletConfiguration, error) &#123;</span><br><span class="line">	//构造了一个针对kubelet的Schema，schema是为了解决数据结构 序列化、反序列化以及多版本对象的兼容和转换问题引入的一个概念；Schema会登记资源对象到类型、类型到资源对象的双向映射；不同版本数据对象的转换函数；不同类型的默认初始化函数（设置default值）；</span><br><span class="line">	scheme, _, err := kubeletscheme.NewSchemeAndCodecs()</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		return nil, err</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//v1beta1版本的kubelet配置</span><br><span class="line">	versioned := &amp;v1beta1.KubeletConfiguration&#123;&#125;</span><br><span class="line">	//设置各字段的默认值，大致的原理是：先拿到versioned的类型，根据该类型找到对应的初始化函数，然后调用初始化函数。</span><br><span class="line">	scheme.Default(versioned)</span><br><span class="line">	</span><br><span class="line">	//无版本的kubelet配置</span><br><span class="line">	config := &amp;kubeletconfig.KubeletConfiguration&#123;&#125;</span><br><span class="line">	//用v1beta1版本的配置去初始化无版本的kubelet配置，这里其实没有理解为什么要绕这么一下？？</span><br><span class="line">	if err := scheme.Convert(versioned, config, nil); err != nil &#123;</span><br><span class="line">		return nil, err</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//设置其他配置项的默认值</span><br><span class="line">	applyLegacyDefaults(config)</span><br><span class="line">	return config, nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>构造kubelet schmea的函数如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// NewSchemeAndCodecs is a utility function that returns a Scheme and CodecFactory</span><br><span class="line">// that understand the types in the kubeletconfig API group.</span><br><span class="line">func NewSchemeAndCodecs() (*runtime.Scheme, *serializer.CodecFactory, error) &#123;</span><br><span class="line">	//new了一个空的Schema</span><br><span class="line">	scheme := runtime.NewScheme()</span><br><span class="line">	</span><br><span class="line">	//调用了register.go中的注册函数，针对资源：GroupVersion&#123;Group: GroupName, Version: runtime.APIVersionInternal&#125; 注册了两个类型：KubeletConfiguration 和 SerializedNodeConfigSource</span><br><span class="line">	if err := kubeletconfig.AddToScheme(scheme); err != nil &#123;</span><br><span class="line">		return nil, nil, err</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	//调用v1beta1下的注册函数，为scheme设置了结构体默认值初始化函数，该初始化函数符合结构体 KubeletConfiguration各字段默认值的设置，具体的代码在v1beta1下的defaults.go文件中</span><br><span class="line">	if err := kubeletconfigv1beta1.AddToScheme(scheme); err != nil &#123;</span><br><span class="line">		return nil, nil, err</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	codecs := serializer.NewCodecFactory(scheme)</span><br><span class="line">	return scheme, &amp;codecs, nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最下层的初始化函数如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">func SetDefaults_KubeletConfiguration(obj *kubeletconfigv1beta1.KubeletConfiguration) &#123;</span><br><span class="line">	if obj.SyncFrequency == zeroDuration &#123;</span><br><span class="line">		obj.SyncFrequency = metav1.Duration&#123;Duration: 1 * time.Minute&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if obj.FileCheckFrequency == zeroDuration &#123;</span><br><span class="line">		obj.FileCheckFrequency = metav1.Duration&#123;Duration: 20 * time.Second&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if obj.HTTPCheckFrequency == zeroDuration &#123;</span><br><span class="line">		obj.HTTPCheckFrequency = metav1.Duration&#123;Duration: 20 * time.Second&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if obj.Address == &quot;&quot; &#123;</span><br><span class="line">		obj.Address = &quot;0.0.0.0&quot;</span><br><span class="line">	&#125;</span><br><span class="line">	if obj.Port == 0 &#123;</span><br><span class="line">		obj.Port = ports.KubeletPort</span><br><span class="line">	&#125;</span><br><span class="line">	if obj.Authentication.Anonymous.Enabled == nil &#123;</span><br><span class="line">		obj.Authentication.Anonymous.Enabled = utilpointer.BoolPtr(false)</span><br><span class="line">	&#125;</span><br><span class="line">	if obj.Authentication.Webhook.Enabled == nil &#123;</span><br><span class="line">		obj.Authentication.Webhook.Enabled = utilpointer.BoolPtr(true)</span><br><span class="line">	&#125;</span><br><span class="line">	if obj.Authentication.Webhook.CacheTTL == zeroDuration &#123;</span><br><span class="line">		obj.Authentication.Webhook.CacheTTL = metav1.Duration&#123;Duration: 2 * time.Minute&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if obj.Authorization.Mode == &quot;&quot; &#123;</span><br><span class="line">		obj.Authorization.Mode = kubeletconfigv1beta1.KubeletAuthorizationModeWebhook</span><br><span class="line">	&#125;</span><br><span class="line">	if obj.Authorization.Webhook.CacheAuthorizedTTL == zeroDuration &#123;</span><br><span class="line">		obj.Authorization.Webhook.CacheAuthorizedTTL = metav1.Duration&#123;Duration: 5 * time.Minute&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if obj.Authorization.Webhook.CacheUnauthorizedTTL == zeroDuration &#123;</span><br><span class="line">		obj.Authorization.Webhook.CacheUnauthorizedTTL = metav1.Duration&#123;Duration: 30 * time.Second&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	if obj.RegistryPullQPS == nil &#123;</span><br><span class="line">		obj.RegistryPullQPS = utilpointer.Int32Ptr(5)</span><br><span class="line">	&#125;</span><br><span class="line">	if obj.RegistryBurst == 0 &#123;</span><br><span class="line">		obj.RegistryBurst = 10</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后看下，scheme的具体代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">// Scheme defines methods for serializing and deserializing API objects, a type</span><br><span class="line">// registry for converting group, version, and kind information to and from Go</span><br><span class="line">// schemas, and mappings between Go schemas of different versions. A scheme is the</span><br><span class="line">// foundation for a versioned API and versioned configuration over time.</span><br><span class="line">//</span><br><span class="line">// In a Scheme, a Type is a particular Go struct, a Version is a point-in-time</span><br><span class="line">// identifier for a particular representation of that Type (typically backwards</span><br><span class="line">// compatible), a Kind is the unique name for that Type within the Version, and a</span><br><span class="line">// Group identifies a set of Versions, Kinds, and Types that evolve over time. An</span><br><span class="line">// Unversioned Type is one that is not yet formally bound to a type and is promised</span><br><span class="line">// to be backwards compatible (effectively a &quot;v1&quot; of a Type that does not expect</span><br><span class="line">// to break in the future).</span><br><span class="line">//</span><br><span class="line">// Schemes are not expected to change at runtime and are only threadsafe after</span><br><span class="line">// registration is complete.</span><br><span class="line">type Scheme struct &#123;</span><br><span class="line">	// versionMap allows one to figure out the go type of an object with</span><br><span class="line">	// the given version and name.</span><br><span class="line">	/*</span><br><span class="line">	kubernetes中的类型对象都实现了Object接口，如下：</span><br><span class="line">	// Object interface must be supported by all API types registered with Scheme. Since objects in a scheme are</span><br><span class="line">// expected to be serialized to the wire, the interface an Object must provide to the Scheme allows</span><br><span class="line">// serializers to set the kind, version, and group the object is represented as. An Object may choose</span><br><span class="line">// to return a no-op ObjectKindAccessor in cases where it is not expected to be serialized.</span><br><span class="line">type Object interface &#123;</span><br><span class="line">	GetObjectKind() schema.ObjectKind</span><br><span class="line">	DeepCopyObject() Object</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">通过该接口可以获取到某个对象关联的资源类型GroupVersionKind：所属的Group、版本以及资源名；</span><br><span class="line">有了gvkToType和typeToGVK所提供的信息，就可以结局数据对象的序列化和反序列化问题。</span><br><span class="line">	*/</span><br><span class="line">	gvkToType map[schema.GroupVersionKind]reflect.Type</span><br><span class="line"></span><br><span class="line">	// typeToGroupVersion allows one to find metadata for a given go object.</span><br><span class="line">	// The reflect.Type we index by should *not* be a pointer.</span><br><span class="line">	typeToGVK map[reflect.Type][]schema.GroupVersionKind</span><br><span class="line"></span><br><span class="line">	// unversionedTypes are transformed without conversion in ConvertToVersion.</span><br><span class="line">	unversionedTypes map[reflect.Type]schema.GroupVersionKind</span><br><span class="line"></span><br><span class="line">	// unversionedKinds are the names of kinds that can be created in the context of any group</span><br><span class="line">	// or version</span><br><span class="line">	// TODO: resolve the status of unversioned types.</span><br><span class="line">	unversionedKinds map[string]reflect.Type</span><br><span class="line"></span><br><span class="line">	// Map from version and resource to the corresponding func to convert</span><br><span class="line">	// resource field labels in that version to internal version.</span><br><span class="line">	fieldLabelConversionFuncs map[schema.GroupVersionKind]FieldLabelConversionFunc</span><br><span class="line"></span><br><span class="line">	// defaulterFuncs is an array of interfaces to be called with an object to provide defaulting</span><br><span class="line">	// the provided object must be a pointer.</span><br><span class="line">	//初始化函数，每种类型都有自己的初始化函数</span><br><span class="line">	defaulterFuncs map[reflect.Type]func(interface&#123;&#125;)</span><br><span class="line"></span><br><span class="line">	// converter stores all registered conversion functions. It also has</span><br><span class="line">	// default converting behavior.</span><br><span class="line">	converter *conversion.Converter</span><br><span class="line"></span><br><span class="line">	// versionPriority is a map of groups to ordered lists of versions for those groups indicating the</span><br><span class="line">	// default priorities of these versions as registered in the scheme</span><br><span class="line">	versionPriority map[string][]string</span><br><span class="line"></span><br><span class="line">	// observedVersions keeps track of the order we&apos;ve seen versions during type registration</span><br><span class="line">	observedVersions []schema.GroupVersion</span><br><span class="line"></span><br><span class="line">	// schemeName is the name of this scheme.  If you don&apos;t specify a name, the stack of the NewScheme caller will be used.</span><br><span class="line">	// This is useful for error reporting to indicate the origin of the scheme.</span><br><span class="line">	schemeName string</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总的调用链路大概如下：<br>options.NewKubeletConfiguration() -&gt; kubeletscheme.NewSchemeAndCodecs()(完成kubeletSchema的构建，包括类型的注册，初始化函数的注册) -&gt; scheme.Default() -&gt; SetDefaults_KubeletConfiguration()</p>
+
+      
+    </div>
+
+    
+
+    
+      
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/29/本地数据库引擎WiredTiger测试记录/" rel="next" title="本地数据库引擎WiredTiger测试记录">
+                <i class="fa fa-chevron-left"></i> 本地数据库引擎WiredTiger测试记录
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  
+  <p class="site-author-name" itemprop="name">韦远科</p>
+  <div class="site-description motion-element" itemprop="description"></div>
+</div>
+
+
+  <nav class="site-state motion-element">
+    
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+    
+
+    
+
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">tags</span>
+        
+      </div>
+    
+  </nav>
+
+
+
+
+
+
+
+
+
+
+
+
+
+          
+          
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">韦远科</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+
+  </div>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+
+
+  <script src="/js/utils.js?v=7.2.0"></script>
+
+  <script src="/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/js/scrollspy.js?v=7.2.0"></script>
+<script src="/js/post-details.js?v=7.2.0"></script>
+
+
+
+  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+  
+
+  
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+</body>
+</html>
