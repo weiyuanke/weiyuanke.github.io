@@ -108,7 +108,7 @@
 <meta property="og:site_name" content="韦远科的博客">
 <meta property="og:description" content="项目上有一个性能优化的需求，需要进一步优化远程调用Redis导致的RT偏高问题，目前的想法是做两级缓存，通过加入一个基于嵌入式数据库引擎的本地缓存，来降低对远端redis的依赖；大致的结构如下： 业务服务 —&amp;gt; 本地数据库引擎 -&amp;gt; 远端redis 之所以用数据库引擎，是因为在满足QPS的情况下，想尽可能本地化更多的数据，直接用内存太奢侈了。 对于读操作：优先读取本地，本地没有的话，再">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-07-29T12:11:34.509Z">
+<meta property="og:updated_time" content="2019-08-06T00:53:22.875Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="本地数据库引擎WiredTiger测试记录">
 <meta name="twitter:description" content="项目上有一个性能优化的需求，需要进一步优化远程调用Redis导致的RT偏高问题，目前的想法是做两级缓存，通过加入一个基于嵌入式数据库引擎的本地缓存，来降低对远端redis的依赖；大致的结构如下： 业务服务 —&amp;gt; 本地数据库引擎 -&amp;gt; 远端redis 之所以用数据库引擎，是因为在满足QPS的情况下，想尽可能本地化更多的数据，直接用内存太奢侈了。 对于读操作：优先读取本地，本地没有的话，再">
@@ -326,13 +326,23 @@
                 
               
 
-              <time title="Created: 2019-07-29 18:45:11 / Modified: 20:11:34" itemprop="dateCreated datePublished" datetime="2019-07-29T18:45:11+08:00">2019-07-29</time>
+              <time title="Created: 2019-07-29 18:45:11" itemprop="dateCreated datePublished" datetime="2019-07-29T18:45:11+08:00">2019-07-29</time>
             </span>
           
 
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-06 08:53:22" itemprop="dateModified" datetime="2019-08-06T08:53:22+08:00">2019-08-06</time>
+              </span>
             
           
 
