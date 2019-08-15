@@ -279,6 +279,156 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/08/15/ThreadPoolExecutor队列满时提交任务阻塞/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="韦远科">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="韦远科的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/08/15/ThreadPoolExecutor队列满时提交任务阻塞/" class="post-title-link" itemprop="url">ThreadPoolExecutor队列满时提交任务阻塞</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-08-15 11:19:15 / Modified: 11:44:30" itemprop="dateCreated datePublished" datetime="2019-08-15T11:19:15+08:00">2019-08-15</time>
+            </span>
+          
+
+          
+            
+
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>项目中有一个需求：给线程池提交任务的时候，如果任务队列已满，需要ThreadPoolExecutor.execute调用阻塞等待。google了相关的资料，记录在这里，供有同样需求的同行参考。</p>
+<p><a href="https://stackoverflow.com/questions/4521983/java-executorservice-that-blocks-on-submission-after-a-certain-queue-size/4522411#4522411" target="_blank" rel="noopener">https://stackoverflow.com/questions/4521983/java-executorservice-that-blocks-on-submission-after-a-certain-queue-size/4522411#4522411</a></p>
+<p>ThreadPoolExecutor相关的几个点：<br>（1）execute提交任务的时候，会调用指定队列的offer方法，如果offer方法返回失败，则表示队列已满。如果此时，corePoolSize &lt; maximumPoolSize 会发起新的线程执行新提交的任务；如果 corePoolSize == maximumPoolSize， 则任务提交失败，会调用RejectedExecutionHandler处理<br>（2）java提供了四个内置的RejectedExecutionHandler， 如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * A handler for rejected tasks that throws a</span><br><span class="line"> * &#123;@code RejectedExecutionException&#125;.</span><br><span class="line"> */</span><br><span class="line">public static class AbortPolicy implements RejectedExecutionHandler &#123;</span><br><span class="line">    /**</span><br><span class="line">     * Creates an &#123;@code AbortPolicy&#125;.</span><br><span class="line">     */</span><br><span class="line">    public AbortPolicy() &#123; &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Always throws RejectedExecutionException.</span><br><span class="line">     *</span><br><span class="line">     * @param r the runnable task requested to be executed</span><br><span class="line">     * @param e the executor attempting to execute this task</span><br><span class="line">     * @throws RejectedExecutionException always</span><br><span class="line">     */</span><br><span class="line">    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) &#123;</span><br><span class="line">        throw new RejectedExecutionException(&quot;Task &quot; + r.toString() +</span><br><span class="line">                                             &quot; rejected from &quot; +</span><br><span class="line">                                             e.toString());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * A handler for rejected tasks that silently discards the</span><br><span class="line"> * rejected task.</span><br><span class="line"> */</span><br><span class="line">public static class DiscardPolicy implements RejectedExecutionHandler &#123;</span><br><span class="line">    /**</span><br><span class="line">     * Creates a &#123;@code DiscardPolicy&#125;.</span><br><span class="line">     */</span><br><span class="line">    public DiscardPolicy() &#123; &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Does nothing, which has the effect of discarding task r.</span><br><span class="line">     *</span><br><span class="line">     * @param r the runnable task requested to be executed</span><br><span class="line">     * @param e the executor attempting to execute this task</span><br><span class="line">     */</span><br><span class="line">    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * A handler for rejected tasks that discards the oldest unhandled</span><br><span class="line"> * request and then retries &#123;@code execute&#125;, unless the executor</span><br><span class="line"> * is shut down, in which case the task is discarded.</span><br><span class="line"> */</span><br><span class="line">public static class DiscardOldestPolicy implements RejectedExecutionHandler &#123;</span><br><span class="line">    /**</span><br><span class="line">     * Creates a &#123;@code DiscardOldestPolicy&#125; for the given executor.</span><br><span class="line">     */</span><br><span class="line">    public DiscardOldestPolicy() &#123; &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * Obtains and ignores the next task that the executor</span><br><span class="line">     * would otherwise execute, if one is immediately available,</span><br><span class="line">     * and then retries execution of task r, unless the executor</span><br><span class="line">     * is shut down, in which case task r is instead discarded.</span><br><span class="line">     *</span><br><span class="line">     * @param r the runnable task requested to be executed</span><br><span class="line">     * @param e the executor attempting to execute this task</span><br><span class="line">     */</span><br><span class="line">    public void rejectedExecution(Runnable r, ThreadPoolExecutor e) &#123;</span><br><span class="line">        if (!e.isShutdown()) &#123;</span><br><span class="line">            e.getQueue().poll();</span><br><span class="line">            e.execute(r);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解法1: 重写队列的offer方法，让其变为一个阻塞调用<br>使用这种方法时，线程数最多只能到corePoolSize个，相当于maximumPoolSize的设置无效；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">     * 重写offer为阻塞操作</span><br><span class="line">     */</span><br><span class="line">    private static class MyBlockingQueue&lt;T&gt; extends LinkedBlockingQueue&lt;T&gt; &#123;</span><br><span class="line"></span><br><span class="line">        public MyBlockingQueue(int size) &#123;</span><br><span class="line">            super(size);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        @Override</span><br><span class="line">        public boolean offer(T t) &#123;</span><br><span class="line">            try &#123;</span><br><span class="line">                put(t);</span><br><span class="line">                return true;</span><br><span class="line">            &#125; catch (InterruptedException e) &#123;</span><br><span class="line">                Thread.currentThread().interrupt();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">        /**</span><br><span class="line">     * 固定线程池, block when queue is filled up</span><br><span class="line">     */</span><br><span class="line">    public static ThreadPoolExecutor newFixedThreadPool(int nThreads, int queueSize, ThreadFactory threadFactory) &#123;</span><br><span class="line">        return new ThreadPoolExecutor(</span><br><span class="line">                nThreads, nThreads, 0L, TimeUnit.SECONDS, new MyBlockingQueue&lt;&gt;(queueSize), threadFactory);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>解法2: 基于java信号量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public class BoundedExecutor &#123;</span><br><span class="line">    private final Executor exec;</span><br><span class="line">    private final Semaphore semaphore;</span><br><span class="line"></span><br><span class="line">    public BoundedExecutor(Executor exec, int bound) &#123;</span><br><span class="line">        this.exec = exec;</span><br><span class="line">        this.semaphore = new Semaphore(bound);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void submitTask(final Runnable command)</span><br><span class="line">            throws InterruptedException, RejectedExecutionException &#123;</span><br><span class="line">        semaphore.acquire();</span><br><span class="line">        try &#123;</span><br><span class="line">            exec.execute(new Runnable() &#123;</span><br><span class="line">                public void run() &#123;</span><br><span class="line">                    try &#123;</span><br><span class="line">                        command.run();</span><br><span class="line">                    &#125; finally &#123;</span><br><span class="line">                        semaphore.release();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125; catch (RejectedExecutionException e) &#123;</span><br><span class="line">            semaphore.release();</span><br><span class="line">            throw e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/31/kubelet服务启动流程中，默认参数的填充机制/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -934,169 +1084,11 @@
   </article>
 
     
-        
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/03/Kubernetes三种Client的使用示例/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="韦远科">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="韦远科的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/07/03/Kubernetes三种Client的使用示例/" class="post-title-link" itemprop="url">Kubernetes三种Client的使用示例</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-07-03 16:55:45" itemprop="dateCreated datePublished" datetime="2019-07-03T16:55:45+08:00">2019-07-03</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-08-06 08:53:22" itemprop="dateModified" datetime="2019-08-06T08:53:22+08:00">2019-08-06</time>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>kubernetes的Client库——go-client中提供了如下三种类型的client</p>
-<p>ClientSet：可以访问集群中所有的原生资源，如pods、deployment等，是最常用的一种</p>
-<p>dynamicClient: 可以处理集群中所有的资源，包括crd（自定义资源），另外它的返回是一个map[string]interface{}类型；目前主要用在garbage collector和namespace controller中。</p>
-<p>RestClient：前面两种client的基础， 更为底层一些。</p>
-<p>相关的示例如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">	&quot;flag&quot;</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">	&quot;k8s.io/api/core/v1&quot;</span><br><span class="line">	v12 &quot;k8s.io/apimachinery/pkg/apis/meta/v1&quot;</span><br><span class="line">	&quot;k8s.io/apimachinery/pkg/runtime&quot;</span><br><span class="line">	&quot;k8s.io/apimachinery/pkg/runtime/schema&quot;</span><br><span class="line">	&quot;k8s.io/apimachinery/pkg/runtime/serializer&quot;</span><br><span class="line">	&quot;k8s.io/client-go/dynamic&quot;</span><br><span class="line">	&quot;k8s.io/client-go/kubernetes&quot;</span><br><span class="line">	&quot;k8s.io/client-go/kubernetes/scheme&quot;</span><br><span class="line">	&quot;k8s.io/client-go/rest&quot;</span><br><span class="line">	&quot;k8s.io/client-go/tools/clientcmd&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">var (</span><br><span class="line">	//集群配置文件路径</span><br><span class="line">	kubeconfigStr = flag.String(&quot;kubeconfig&quot;, &quot;default value&quot;, &quot;kubernetes config file&quot;)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main()  &#123;</span><br><span class="line">	//解析参数</span><br><span class="line">	flag.Parse()</span><br><span class="line"></span><br><span class="line">	testClientSet()</span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;\nrest&quot;)</span><br><span class="line"></span><br><span class="line">	testRestClient()</span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;\n.....&quot;)</span><br><span class="line">	testDynamicClient()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func testRestClient() &#123;</span><br><span class="line">	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfigStr)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    //原生接口都在/api下，扩展接口在/apis下</span><br><span class="line">	config.APIPath = &quot;/api&quot;</span><br><span class="line">	//pods资源相关的group为空</span><br><span class="line">	config.GroupVersion = &amp;schema.GroupVersion&#123;</span><br><span class="line">		Group:    &quot;&quot;,</span><br><span class="line">		Version: &quot;v1&quot;,</span><br><span class="line">	&#125;</span><br><span class="line">	//序列化方式，目前json和protocal buf</span><br><span class="line">	config.ContentType = runtime.ContentTypeJSON</span><br><span class="line">	config.NegotiatedSerializer = serializer.DirectCodecFactory&#123;CodecFactory: scheme.Codecs&#125;</span><br><span class="line"></span><br><span class="line">	restClient, err := rest.RESTClientFor(config)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	podList := v1.PodList&#123;&#125;</span><br><span class="line">	//除了Do()方法之外，还有DoRaw()，返回原始的bytes； Do()会做一下类型的转化</span><br><span class="line">	restClient.Get().Resource(&quot;pods&quot;).Namespace(&quot;&quot;).Do().Into(&amp;podList)</span><br><span class="line"></span><br><span class="line">	fmt.Println(podList)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func testClientSet() &#123;</span><br><span class="line">	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfigStr)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	clientset, err := kubernetes.NewForConfig(config)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//一行代码指定group、version、resource、以及动作</span><br><span class="line">	podList, err := clientset.CoreV1().Pods(&quot;&quot;).List(v12.ListOptions&#123;&#125;)</span><br><span class="line"></span><br><span class="line">	fmt.Println(podList.Items)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func testDynamicClient() &#123;</span><br><span class="line">	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfigStr)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	dynamicClient, err := dynamic.NewForConfig(config)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//指定group、version以及要访问的资源 </span><br><span class="line">	testrcGVR := schema.GroupVersionResource&#123;</span><br><span class="line">		Group:    &quot;&quot;,</span><br><span class="line">		Version:  &quot;v1&quot;,</span><br><span class="line">		Resource: &quot;pods&quot;,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	unstr, err := dynamicClient.Resource(testrcGVR).List(v12.ListOptions&#123;&#125;)</span><br><span class="line"></span><br><span class="line">	fmt.Println(unstr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-          
-        
-      
-    </div>
-
-    
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1139,7 +1131,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1162,7 +1154,9 @@
         
           
         
-        <span class="site-state-item-count">4</span>
+          
+        
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">tags</span>
         
       </div>

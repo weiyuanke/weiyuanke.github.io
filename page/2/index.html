@@ -279,6 +279,164 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/03/Kubernetes三种Client的使用示例/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="韦远科">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="韦远科的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/07/03/Kubernetes三种Client的使用示例/" class="post-title-link" itemprop="url">Kubernetes三种Client的使用示例</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-03 16:55:45" itemprop="dateCreated datePublished" datetime="2019-07-03T16:55:45+08:00">2019-07-03</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-08-06 08:53:22" itemprop="dateModified" datetime="2019-08-06T08:53:22+08:00">2019-08-06</time>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>kubernetes的Client库——go-client中提供了如下三种类型的client</p>
+<p>ClientSet：可以访问集群中所有的原生资源，如pods、deployment等，是最常用的一种</p>
+<p>dynamicClient: 可以处理集群中所有的资源，包括crd（自定义资源），另外它的返回是一个map[string]interface{}类型；目前主要用在garbage collector和namespace controller中。</p>
+<p>RestClient：前面两种client的基础， 更为底层一些。</p>
+<p>相关的示例如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">	&quot;flag&quot;</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">	&quot;k8s.io/api/core/v1&quot;</span><br><span class="line">	v12 &quot;k8s.io/apimachinery/pkg/apis/meta/v1&quot;</span><br><span class="line">	&quot;k8s.io/apimachinery/pkg/runtime&quot;</span><br><span class="line">	&quot;k8s.io/apimachinery/pkg/runtime/schema&quot;</span><br><span class="line">	&quot;k8s.io/apimachinery/pkg/runtime/serializer&quot;</span><br><span class="line">	&quot;k8s.io/client-go/dynamic&quot;</span><br><span class="line">	&quot;k8s.io/client-go/kubernetes&quot;</span><br><span class="line">	&quot;k8s.io/client-go/kubernetes/scheme&quot;</span><br><span class="line">	&quot;k8s.io/client-go/rest&quot;</span><br><span class="line">	&quot;k8s.io/client-go/tools/clientcmd&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">var (</span><br><span class="line">	//集群配置文件路径</span><br><span class="line">	kubeconfigStr = flag.String(&quot;kubeconfig&quot;, &quot;default value&quot;, &quot;kubernetes config file&quot;)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main()  &#123;</span><br><span class="line">	//解析参数</span><br><span class="line">	flag.Parse()</span><br><span class="line"></span><br><span class="line">	testClientSet()</span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;\nrest&quot;)</span><br><span class="line"></span><br><span class="line">	testRestClient()</span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;\n.....&quot;)</span><br><span class="line">	testDynamicClient()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func testRestClient() &#123;</span><br><span class="line">	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfigStr)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    //原生接口都在/api下，扩展接口在/apis下</span><br><span class="line">	config.APIPath = &quot;/api&quot;</span><br><span class="line">	//pods资源相关的group为空</span><br><span class="line">	config.GroupVersion = &amp;schema.GroupVersion&#123;</span><br><span class="line">		Group:    &quot;&quot;,</span><br><span class="line">		Version: &quot;v1&quot;,</span><br><span class="line">	&#125;</span><br><span class="line">	//序列化方式，目前json和protocal buf</span><br><span class="line">	config.ContentType = runtime.ContentTypeJSON</span><br><span class="line">	config.NegotiatedSerializer = serializer.DirectCodecFactory&#123;CodecFactory: scheme.Codecs&#125;</span><br><span class="line"></span><br><span class="line">	restClient, err := rest.RESTClientFor(config)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	podList := v1.PodList&#123;&#125;</span><br><span class="line">	//除了Do()方法之外，还有DoRaw()，返回原始的bytes； Do()会做一下类型的转化</span><br><span class="line">	restClient.Get().Resource(&quot;pods&quot;).Namespace(&quot;&quot;).Do().Into(&amp;podList)</span><br><span class="line"></span><br><span class="line">	fmt.Println(podList)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func testClientSet() &#123;</span><br><span class="line">	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfigStr)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	clientset, err := kubernetes.NewForConfig(config)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//一行代码指定group、version、resource、以及动作</span><br><span class="line">	podList, err := clientset.CoreV1().Pods(&quot;&quot;).List(v12.ListOptions&#123;&#125;)</span><br><span class="line"></span><br><span class="line">	fmt.Println(podList.Items)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func testDynamicClient() &#123;</span><br><span class="line">	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfigStr)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	dynamicClient, err := dynamic.NewForConfig(config)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//指定group、version以及要访问的资源 </span><br><span class="line">	testrcGVR := schema.GroupVersionResource&#123;</span><br><span class="line">		Group:    &quot;&quot;,</span><br><span class="line">		Version:  &quot;v1&quot;,</span><br><span class="line">		Resource: &quot;pods&quot;,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	unstr, err := dynamicClient.Resource(testrcGVR).List(v12.ListOptions&#123;&#125;)</span><br><span class="line"></span><br><span class="line">	fmt.Println(unstr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+
+    
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/03/使用-client-go-控制原生及拓展的-Kubernetes-Controller-API/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -890,174 +1048,11 @@
   </article>
 
     
-        
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/25/golang-net-http-包简介/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="韦远科">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="韦远科的博客">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/06/25/golang-net-http-包简介/" class="post-title-link" itemprop="url">golang net/http 包简介</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-
-          
-          
-          
-
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-
-              
-                
-              
-
-              <time title="Created: 2019-06-25 23:28:54" itemprop="dateCreated datePublished" datetime="2019-06-25T23:28:54+08:00">2019-06-25</time>
-            </span>
-          
-
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
-                <time title="Modified: 2019-08-06 08:53:22" itemprop="dateModified" datetime="2019-08-06T08:53:22+08:00">2019-08-06</time>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Kubernetes的Api Server中用到了golang的http包，故而做下简单的了解。</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"io"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.HandleFunc(<span class="string">"/"</span>, helloworld)</span><br><span class="line">	err := http.ListenAndServe(<span class="string">":9090"</span>, <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"ListenAndServe: "</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">helloworld</span><span class="params">(w http.ResponseWriter, request *http.Request)</span></span> &#123;</span><br><span class="line">	result := <span class="string">"HelloWorld\n"</span></span><br><span class="line">	result = result + <span class="string">"RequestURI: "</span> + request.RequestURI</span><br><span class="line"></span><br><span class="line">	io.WriteString(w, result)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>以上代码开启了一个简单的web服务，应用启动后访问如下地址：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1:9090/?we=12</span><br></pre></td></tr></table></figure>
-
-<p>会给出如下的输出</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HelloWorld</span><br><span class="line">RequestURI: /?we=12</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//第一个参数是监听的地址和端口</span><br><span class="line">//第二个参数是一个Handler，实现了ServeHTTP(ResponseWriter, *Request)方法，</span><br><span class="line">//客户端的请求会交由这个方法进行处理。</span><br><span class="line">//如果传nil的话，会采用http包默认的handler，DefaultServeMux来进行处理。</span><br><span class="line">//DefaultServeMux可以认为是一个路由管理器，</span><br><span class="line">//它的ServeHTTP方法实现 会根据客户端请求的路径来将请求路由到不同的HandlerFunc上去。</span><br><span class="line">http.ListenAndServe(&quot;:9090&quot;, nil)</span><br><span class="line"></span><br><span class="line">//为DefaultServeMux注册一个HandleFunc</span><br><span class="line">http.HandleFunc(&quot;/&quot;, helloworld)</span><br><span class="line"></span><br><span class="line">具体的代码：</span><br><span class="line">// HandleFunc registers the handler function for the given pattern</span><br><span class="line">// in the DefaultServeMux.</span><br><span class="line">// The documentation for ServeMux explains how patterns are matched.</span><br><span class="line">func HandleFunc(pattern string, handler func(ResponseWriter, *Request)) &#123;</span><br><span class="line">	DefaultServeMux.HandleFunc(pattern, handler)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>除了采用默认的路由分发器DefaultServeMux，也可以构建自己的Mux，如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">	&quot;io&quot;</span><br><span class="line">	&quot;net/http&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	//新建一个路由管理器，</span><br><span class="line">	mux := http.NewServeMux()</span><br><span class="line">	//绑定路径和处理函数</span><br><span class="line">	mux.HandleFunc(&quot;/&quot;, helloworld)</span><br><span class="line"></span><br><span class="line">	server := &amp;http.Server&#123;</span><br><span class="line">		Addr:&quot;:9090&quot;,</span><br><span class="line">		Handler:mux,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	server.ListenAndServe()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func helloworld(w http.ResponseWriter, request *http.Request) &#123;</span><br><span class="line">	result := &quot;HelloWorld\n&quot;</span><br><span class="line">	result = result + &quot;RequestURI: &quot; + request.RequestURI</span><br><span class="line"></span><br><span class="line">	io.WriteString(w, result)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -1100,7 +1095,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-count">11</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1123,7 +1118,9 @@
         
           
         
-        <span class="site-state-item-count">4</span>
+          
+        
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">tags</span>
         
       </div>

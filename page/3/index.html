@@ -100,18 +100,13 @@
   };
 </script>
 
-  <meta name="description" content="google xuchao的介绍，看完之后收获很大，故而分享出来，希望更多人看到。 腾讯视频地址">
-<meta name="keywords" content="kubernetes">
-<meta property="og:type" content="article">
-<meta property="og:title" content="使用 client-go 控制原生及拓展的 Kubernetes Controller&#x2F;API">
-<meta property="og:url" content="http://yoursite.com/2019/07/03/使用-client-go-控制原生及拓展的-Kubernetes-Controller-API/index.html">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="韦远科的博客">
+<meta property="og:url" content="http://yoursite.com/page/3/index.html">
 <meta property="og:site_name" content="韦远科的博客">
-<meta property="og:description" content="google xuchao的介绍，看完之后收获很大，故而分享出来，希望更多人看到。 腾讯视频地址">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-08-06T00:53:22.874Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用 client-go 控制原生及拓展的 Kubernetes Controller&#x2F;API">
-<meta name="twitter:description" content="google xuchao的介绍，看完之后收获很大，故而分享出来，希望更多人看到。 腾讯视频地址">
+<meta name="twitter:title" content="韦远科的博客">
 
 
 
@@ -119,7 +114,7 @@
 
   
   
-  <link rel="canonical" href="http://yoursite.com/2019/07/03/使用-client-go-控制原生及拓展的-Kubernetes-Controller-API/">
+  <link rel="canonical" href="http://yoursite.com/page/3/">
 
 
 
@@ -130,7 +125,7 @@
 </script>
 
   
-  <title>使用 client-go 控制原生及拓展的 Kubernetes Controller/API | 韦远科的博客</title>
+  <title>韦远科的博客</title>
   
 
 
@@ -174,7 +169,8 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-left 
+  page-home">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -268,9 +264,9 @@
           
           <div id="content" class="content">
             
-
-  <div id="posts" class="posts-expand">
-      
+  <section id="posts" class="posts-expand">
+    
+        
 
   
   
@@ -283,7 +279,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/03/使用-client-go-控制原生及拓展的-Kubernetes-Controller-API/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/06/25/golang-net-http-包简介/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="韦远科">
@@ -300,8 +296,10 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">使用 client-go 控制原生及拓展的 Kubernetes Controller/API
-
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/06/25/golang-net-http-包简介/" class="post-title-link" itemprop="url">golang net/http 包简介</a>
               
             
           </h1>
@@ -326,7 +324,7 @@
                 
               
 
-              <time title="Created: 2019-07-03 15:05:53" itemprop="dateCreated datePublished" datetime="2019-07-03T15:05:53+08:00">2019-07-03</time>
+              <time title="Created: 2019-06-25 23:28:54" itemprop="dateCreated datePublished" datetime="2019-06-25T23:28:54+08:00">2019-06-25</time>
             </span>
           
 
@@ -375,16 +373,28 @@
       
 
       
-        <p>google xuchao的介绍，看完之后收获很大，故而分享出来，希望更多人看到。</p>
-<p><a href="https://v.qq.com/txp/iframe/player.html?vid=c03641vzw2m" target="_blank" rel="noopener">腾讯视频地址</a></p>
+        
+          
+            <p>Kubernetes的Api Server中用到了golang的http包，故而做下简单的了解。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"io"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	http.HandleFunc(<span class="string">"/"</span>, helloworld)</span><br><span class="line">	err := http.ListenAndServe(<span class="string">":9090"</span>, <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Println(<span class="string">"ListenAndServe: "</span>, err)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">helloworld</span><span class="params">(w http.ResponseWriter, request *http.Request)</span></span> &#123;</span><br><span class="line">	result := <span class="string">"HelloWorld\n"</span></span><br><span class="line">	result = result + <span class="string">"RequestURI: "</span> + request.RequestURI</span><br><span class="line"></span><br><span class="line">	io.WriteString(w, result)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>以上代码开启了一个简单的web服务，应用启动后访问如下地址：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http://127.0.0.1:9090/?we=12</span><br></pre></td></tr></table></figure>
+
+<p>会给出如下的输出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HelloWorld</span><br><span class="line">RequestURI: /?we=12</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//第一个参数是监听的地址和端口</span><br><span class="line">//第二个参数是一个Handler，实现了ServeHTTP(ResponseWriter, *Request)方法，</span><br><span class="line">//客户端的请求会交由这个方法进行处理。</span><br><span class="line">//如果传nil的话，会采用http包默认的handler，DefaultServeMux来进行处理。</span><br><span class="line">//DefaultServeMux可以认为是一个路由管理器，</span><br><span class="line">//它的ServeHTTP方法实现 会根据客户端请求的路径来将请求路由到不同的HandlerFunc上去。</span><br><span class="line">http.ListenAndServe(&quot;:9090&quot;, nil)</span><br><span class="line"></span><br><span class="line">//为DefaultServeMux注册一个HandleFunc</span><br><span class="line">http.HandleFunc(&quot;/&quot;, helloworld)</span><br><span class="line"></span><br><span class="line">具体的代码：</span><br><span class="line">// HandleFunc registers the handler function for the given pattern</span><br><span class="line">// in the DefaultServeMux.</span><br><span class="line">// The documentation for ServeMux explains how patterns are matched.</span><br><span class="line">func HandleFunc(pattern string, handler func(ResponseWriter, *Request)) &#123;</span><br><span class="line">	DefaultServeMux.HandleFunc(pattern, handler)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除了采用默认的路由分发器DefaultServeMux，也可以构建自己的Mux，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">	&quot;io&quot;</span><br><span class="line">	&quot;net/http&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">	//新建一个路由管理器，</span><br><span class="line">	mux := http.NewServeMux()</span><br><span class="line">	//绑定路径和处理函数</span><br><span class="line">	mux.HandleFunc(&quot;/&quot;, helloworld)</span><br><span class="line"></span><br><span class="line">	server := &amp;http.Server&#123;</span><br><span class="line">		Addr:&quot;:9090&quot;,</span><br><span class="line">		Handler:mux,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	server.ListenAndServe()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func helloworld(w http.ResponseWriter, request *http.Request) &#123;</span><br><span class="line">	result := &quot;HelloWorld\n&quot;</span><br><span class="line">	result = result + &quot;RequestURI: &quot; + request.RequestURI</span><br><span class="line"></span><br><span class="line">	io.WriteString(w, result)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
       
     </div>
 
     
 
-    
-      
     
 
     
@@ -402,43 +412,14 @@
 
     <footer class="post-footer">
       
-        
-          
-        
-        <div class="post-tags">
-          
-            <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
-          
-        </div>
+
+      
+
       
 
       
       
-      
-
-      
-        <div class="post-nav">
-          <div class="post-nav-next post-nav-item">
-            
-              <a href="/2019/07/02/DEMO：基于Kubernetes的CRD-Go-client-构建的一个查询pod详细信息的示例/" rel="next" title="DEMO：基于Kubernetes的CRD & Go-client 构建的一个查询pod详细信息的示例">
-                <i class="fa fa-chevron-left"></i> DEMO：基于Kubernetes的CRD & Go-client 构建的一个查询pod详细信息的示例
-              </a>
-            
-          </div>
-
-          <span class="post-nav-divider"></span>
-
-          <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/07/03/Kubernetes三种Client的使用示例/" rel="prev" title="Kubernetes三种Client的使用示例">
-                Kubernetes三种Client的使用示例 <i class="fa fa-chevron-right"></i>
-              </a>
-            
-          </div>
-        </div>
-      
-
-      
+        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -447,14 +428,18 @@
   
   </article>
 
-  </div>
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+
 
 
           </div>
           
-  
-
-
 
         </div>
         
@@ -658,10 +643,6 @@
 
 
   
-  <script src="/js/scrollspy.js?v=7.2.0"></script>
-<script src="/js/post-details.js?v=7.2.0"></script>
-
-
 
   <script src="/js/next-boot.js?v=7.2.0"></script>
 
