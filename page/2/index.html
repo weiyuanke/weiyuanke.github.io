@@ -4,99 +4,54 @@
 
 
 
-
-
-
-
-
-
-
-  
-
-
-<html class="theme-next muse use-motion" lang>
-<head><meta name="generator" content="Hexo 3.9.0">
+<html lang="">
+<head>
   <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
 
-
-
-
-
-
-
-
-
-
-
-
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.2.0">
-
-
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.2.0">
-
-
-  <link rel="mask-icon" href="/images/logo.svg?v=7.2.0" color="#222">
-
-
-
-
-
-
-<link rel="stylesheet" href="/css/main.css?v=7.2.0">
-
-
-
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
 
 
 <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
 
 
-
-
-
-
-
-
-
-
-<script id="hexo.configurations">
+<script id="hexo-configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
     scheme: 'Muse',
-    version: '7.2.0',
+    version: '7.3.0',
+    exturl: false,
     sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
-    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
     copycode: {"enable":false,"show_result":false,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
     fancybox: false,
     mediumzoom: false,
     lazyload: false,
     pangu: false,
     algolia: {
-      applicationID: '',
+      appID: '',
       apiKey: '',
       indexName: '',
       hits: {"per_page":10},
       labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
     },
     localsearch: {"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
-    search: {
-      root: '/',
-      path: ''
-    },
-    tabs: true,
+    path: '',
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     translation: {
       copy_button: 'Copy',
       copy_success: 'Copied',
       copy_failure: 'Copy failed'
-    }
+    },
+    sidebarPadding: 40
   };
 </script>
 
@@ -107,25 +62,22 @@
 <meta property="og:locale" content="default">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="韦远科的博客">
-
-
-
-
-
-  
-  
   <link rel="canonical" href="http://yoursite.com/page/2/">
 
 
-
-<script id="page.configurations">
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
+    isHome: true,
+    isPost: false,
+    isPage: false,
+    isArchive: false
   };
 </script>
 
-  
   <title>韦远科的博客</title>
+  <meta name="generator" content="Hexo 3.9.0">
   
 
 
@@ -137,7 +89,6 @@
 
   <noscript>
   <style>
-  .use-motion .motion-element,
   .use-motion .brand,
   .use-motion .menu-item,
   .sidebar-inner,
@@ -146,7 +97,7 @@
   .use-motion .comments,
   .use-motion .post-header,
   .use-motion .post-body,
-  .use-motion .collection-title { opacity: initial; }
+  .use-motion .collection-header { opacity: initial; }
 
   .use-motion .logo,
   .use-motion .site-title,
@@ -163,30 +114,20 @@
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="default">
-
-  
-  
-    
-  
-
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container use-motion">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
-      <div class="header-inner"><div class="site-brand-wrapper">
+      <div class="header-inner"><div class="site-brand-container">
   <div class="site-meta">
-    
 
-    <div class="custom-logo-site-title">
+    <div>
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">韦远科的博客</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
-    
-    
   </div>
 
   <div class="site-nav-toggle">
@@ -199,126 +140,81 @@
 </div>
 
 
-
 <nav class="site-nav">
   
-    <ul id="menu" class="menu">
+  <ul id="menu" class="menu">
+      
+      
       
         
-        
-        
-          
-          <li class="menu-item menu-item-home">
-
-    
-    
+        <li class="menu-item menu-item-home">
       
-    
-
     
 
     <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
 
   </li>
-        
-        
-        
-          
-          <li class="menu-item menu-item-archives">
-
-    
-    
       
-    
-
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
     
 
     <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
 
   </li>
+  </ul>
 
-      
-      
-    </ul>
-  
-
-  
     
 
-  
-
-  
 </nav>
-
-
-
 </div>
     </header>
 
     
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
 
 
     <main id="main" class="main">
       <div class="main-inner">
         <div class="content-wrap">
-          
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
-    
-        
-
+  <div id="posts" class="posts-expand">
+        <article itemscope itemtype="http://schema.org/Article">
   
   
   
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/13/tensorflow代码示例——单隐层神经网络/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="韦远科">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="韦远科的博客">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/07/13/tensorflow代码示例——单隐层神经网络/" class="post-title-link" itemprop="url">tensorflow代码示例——单隐层神经网络</a>
-              
+        <h1 class="post-title" itemprop="name headline">
             
-          </h1>
-        
+            <a href="/2019/07/13/tensorflow代码示例——单隐层神经网络/" class="post-title-link" itemprop="url">tensorflow代码示例——单隐层神经网络</a>
+          
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
+              <span class="post-meta-item-text">Posted on</span>
 
               
                 
@@ -327,8 +223,6 @@
               <time title="Created: 2019-07-13 12:03:10" itemprop="dateCreated datePublished" datetime="2019-07-13T12:03:10+08:00">2019-07-13</time>
             </span>
           
-
-          
             
 
             
@@ -336,9 +230,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
+                <span class="post-meta-item-text">Edited on</span>
                 <time title="Modified: 2019-08-06 08:53:22" itemprop="dateModified" datetime="2019-08-06T08:53:22+08:00">2019-08-06</time>
               </span>
             
@@ -346,23 +238,8 @@
 
           
 
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
         </div>
       </header>
-    
 
     
     
@@ -370,46 +247,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br></pre></td><td class="code"><pre><span class="line">#coding: utf-8</span><br><span class="line">import tensorflow as tf</span><br><span class="line">from numpy.random import RandomState</span><br><span class="line"></span><br><span class="line">#每轮训练输入的数据量</span><br><span class="line">batch_size = 8</span><br><span class="line"></span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">含有一个隐藏层的神经网络</span><br><span class="line">输入层                           隐藏层                              输出层</span><br><span class="line">                                 A1</span><br><span class="line">                           </span><br><span class="line">                  </span><br><span class="line"></span><br><span class="line">(X1)</span><br><span class="line">          </span><br><span class="line">            </span><br><span class="line">                                 A2                                   Y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(X2)</span><br><span class="line"></span><br><span class="line">                                 A3</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line"></span><br><span class="line">#w1是输入层和隐藏层之前的全连接权重, 相应的w2是隐藏层和输出层之间的连接权重</span><br><span class="line">#这里采用tensorflow内置的随机正态分布对连接权重进行初始化</span><br><span class="line">w1 = tf.Variable(tf.random_normal([2, 3], stddev=1, seed=1))</span><br><span class="line">w2 = tf.Variable(tf.random_normal([3, 1], stddev=1, seed=1))</span><br><span class="line"></span><br><span class="line">#定义输入数据的占位</span><br><span class="line">x = tf.placeholder(tf.float32, shape=(None, 2), name=&quot;x-input&quot;)</span><br><span class="line">y_= tf.placeholder(tf.float32, shape=(None, 1), name=&quot;y-input&quot;)</span><br><span class="line"></span><br><span class="line">#定义神经网络的前向传播过程</span><br><span class="line">a = tf.matmul(x, w1)</span><br><span class="line">y = tf.matmul(a, w2)</span><br><span class="line"></span><br><span class="line">#采用sigmoid激活函数</span><br><span class="line">y = tf.sigmoid(y)</span><br><span class="line"></span><br><span class="line">#采用交叉墒损失函数(y 和 y_ 之前的差距，其中y是神经网络的预测值，y_是实际值)</span><br><span class="line">#clip_by_value对变量的值做上下限处理，将其限制在某个范围内</span><br><span class="line">val = y_ * tf.log(tf.clip_by_value(y, 1e-10, 1.0)) + (1 - y_) * tf.log(tf.clip_by_value(1-y, 1e-10, 1.0))</span><br><span class="line">cross_entropy = -tf.reduce_mean(val)</span><br><span class="line"></span><br><span class="line">#反向传播优化方法，除了AdamOptimizer之外，常用的还有GradientDescentOptimizer MomentumOptimizer</span><br><span class="line">#0.001是学习率，学习的目标就是最小化损失函数</span><br><span class="line">train_step = tf.train.AdamOptimizer(0.001).minimize(cross_entropy)</span><br><span class="line"></span><br><span class="line">#接下来我们造一点训练数据</span><br><span class="line">rdm = RandomState(1)</span><br><span class="line">dataset_size = 128 #128 组训练数据</span><br><span class="line">X = rdm.rand(dataset_size, 2) #随机出来的训练数据输入</span><br><span class="line">Y = [[int(x1+x2&lt;1)] for (x1,x2) in X] #训练数据期望的输出</span><br><span class="line"></span><br><span class="line">#运行整个训练过程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    sess.run(tf.global_variables_initializer()) #初始化所有的变量</span><br><span class="line"></span><br><span class="line">    #变量初始化之后，看下w1和w2的当前值</span><br><span class="line">    print sess.run(w1)</span><br><span class="line">    print sess.run(w2)</span><br><span class="line"></span><br><span class="line">    #迭代5000次</span><br><span class="line">    for i in range(5000):</span><br><span class="line">        #每次采用batch_size组数据进行训练</span><br><span class="line">        start = (i*batch_size) % dataset_size</span><br><span class="line">        end = min(start + batch_size, dataset_size)</span><br><span class="line"></span><br><span class="line">        sess.run(train_step, feed_dict=&#123;x: X[start:end], y_:Y[start:end]&#125;)</span><br><span class="line"></span><br><span class="line">        #每100轮输出一下当前的训练结果：W1和W2和交叉墒</span><br><span class="line">        if i % 100 == 0:</span><br><span class="line">            total_entropy = sess.run(cross_entropy, feed_dict=&#123;x:X, y_:Y&#125;)</span><br><span class="line">            print(&quot;after %d training step, cross entropy is %g&quot; % (i, total_entropy))</span><br><span class="line"></span><br><span class="line">    print sess.run(w1)</span><br><span class="line">    print sess.run(w2)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">###</span><br><span class="line">2019-07-13 12:05:25.725879: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA</span><br><span class="line"></span><br><span class="line">[[-0.8113182   1.4845988   0.06532937]</span><br><span class="line"> [-2.4427042   0.0992484   0.5912243 ]]</span><br><span class="line">[[-0.8113182 ]</span><br><span class="line"> [ 1.4845988 ]</span><br><span class="line"> [ 0.06532937]]</span><br><span class="line">after 0 training step, cross entropy is 1.89805</span><br><span class="line">after 100 training step, cross entropy is 1.62943</span><br><span class="line">after 200 training step, cross entropy is 1.40099</span><br><span class="line">after 300 training step, cross entropy is 1.19732</span><br><span class="line">after 400 training step, cross entropy is 1.02375</span><br><span class="line">after 500 training step, cross entropy is 0.887612</span><br><span class="line">after 600 training step, cross entropy is 0.790222</span><br><span class="line">after 700 training step, cross entropy is 0.727325</span><br><span class="line">after 800 training step, cross entropy is 0.689437</span><br><span class="line">after 900 training step, cross entropy is 0.667623</span><br><span class="line">after 1000 training step, cross entropy is 0.655075</span><br><span class="line">after 1100 training step, cross entropy is 0.647813</span><br><span class="line">after 1200 training step, cross entropy is 0.643196</span><br><span class="line">after 1300 training step, cross entropy is 0.639896</span><br><span class="line">after 1400 training step, cross entropy is 0.637246</span><br><span class="line">after 1500 training step, cross entropy is 0.635031</span><br><span class="line">after 1600 training step, cross entropy is 0.633027</span><br><span class="line">after 1700 training step, cross entropy is 0.631151</span><br><span class="line">after 1800 training step, cross entropy is 0.629368</span><br><span class="line">after 1900 training step, cross entropy is 0.627724</span><br><span class="line">after 2000 training step, cross entropy is 0.626172</span><br><span class="line">after 2100 training step, cross entropy is 0.624696</span><br><span class="line">after 2200 training step, cross entropy is 0.623293</span><br><span class="line">after 2300 training step, cross entropy is 0.622006</span><br><span class="line">after 2400 training step, cross entropy is 0.620801</span><br><span class="line">after 2500 training step, cross entropy is 0.619664</span><br><span class="line">after 2600 training step, cross entropy is 0.618592</span><br><span class="line">after 2700 training step, cross entropy is 0.617622</span><br><span class="line">after 2800 training step, cross entropy is 0.616723</span><br><span class="line">after 2900 training step, cross entropy is 0.615883</span><br><span class="line">after 3000 training step, cross entropy is 0.615096</span><br><span class="line">after 3100 training step, cross entropy is 0.614397</span><br><span class="line">after 3200 training step, cross entropy is 0.613756</span><br><span class="line">after 3300 training step, cross entropy is 0.61316</span><br><span class="line">after 3400 training step, cross entropy is 0.612608</span><br><span class="line">after 3500 training step, cross entropy is 0.612126</span><br><span class="line">after 3600 training step, cross entropy is 0.611689</span><br><span class="line">after 3700 training step, cross entropy is 0.611285</span><br><span class="line">after 3800 training step, cross entropy is 0.610913</span><br><span class="line">after 3900 training step, cross entropy is 0.610594</span><br><span class="line">after 4000 training step, cross entropy is 0.610309</span><br><span class="line">after 4100 training step, cross entropy is 0.610046</span><br><span class="line">after 4200 training step, cross entropy is 0.609804</span><br><span class="line">after 4300 training step, cross entropy is 0.609603</span><br><span class="line">after 4400 training step, cross entropy is 0.609423</span><br><span class="line">after 4500 training step, cross entropy is 0.609258</span><br><span class="line">after 4600 training step, cross entropy is 0.609106</span><br><span class="line">after 4700 training step, cross entropy is 0.608983</span><br><span class="line">after 4800 training step, cross entropy is 0.608874</span><br><span class="line">after 4900 training step, cross entropy is 0.608772</span><br><span class="line">[[ 0.02476983  0.56948674  1.6921941 ]</span><br><span class="line"> [-2.1977348  -0.23668921  1.1143895 ]]</span><br><span class="line">[[-0.45544702]</span><br><span class="line"> [ 0.49110925]</span><br><span class="line"> [-0.98110336]]</span><br></pre></td></tr></table></figure>
-          
+          <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br></pre></td><td class="code"><pre><span class="line">#coding: utf-8</span><br><span class="line">import tensorflow as tf</span><br><span class="line">from numpy.random import RandomState</span><br><span class="line"></span><br><span class="line">#每轮训练输入的数据量</span><br><span class="line">batch_size = 8</span><br><span class="line"></span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line">含有一个隐藏层的神经网络</span><br><span class="line">输入层                           隐藏层                              输出层</span><br><span class="line">                                 A1</span><br><span class="line">                           </span><br><span class="line">                  </span><br><span class="line"></span><br><span class="line">(X1)</span><br><span class="line">          </span><br><span class="line">            </span><br><span class="line">                                 A2                                   Y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">(X2)</span><br><span class="line"></span><br><span class="line">                                 A3</span><br><span class="line">&apos;&apos;&apos;</span><br><span class="line"></span><br><span class="line">#w1是输入层和隐藏层之前的全连接权重, 相应的w2是隐藏层和输出层之间的连接权重</span><br><span class="line">#这里采用tensorflow内置的随机正态分布对连接权重进行初始化</span><br><span class="line">w1 = tf.Variable(tf.random_normal([2, 3], stddev=1, seed=1))</span><br><span class="line">w2 = tf.Variable(tf.random_normal([3, 1], stddev=1, seed=1))</span><br><span class="line"></span><br><span class="line">#定义输入数据的占位</span><br><span class="line">x = tf.placeholder(tf.float32, shape=(None, 2), name=&quot;x-input&quot;)</span><br><span class="line">y_= tf.placeholder(tf.float32, shape=(None, 1), name=&quot;y-input&quot;)</span><br><span class="line"></span><br><span class="line">#定义神经网络的前向传播过程</span><br><span class="line">a = tf.matmul(x, w1)</span><br><span class="line">y = tf.matmul(a, w2)</span><br><span class="line"></span><br><span class="line">#采用sigmoid激活函数</span><br><span class="line">y = tf.sigmoid(y)</span><br><span class="line"></span><br><span class="line">#采用交叉墒损失函数(y 和 y_ 之前的差距，其中y是神经网络的预测值，y_是实际值)</span><br><span class="line">#clip_by_value对变量的值做上下限处理，将其限制在某个范围内</span><br><span class="line">val = y_ * tf.log(tf.clip_by_value(y, 1e-10, 1.0)) + (1 - y_) * tf.log(tf.clip_by_value(1-y, 1e-10, 1.0))</span><br><span class="line">cross_entropy = -tf.reduce_mean(val)</span><br><span class="line"></span><br><span class="line">#反向传播优化方法，除了AdamOptimizer之外，常用的还有GradientDescentOptimizer MomentumOptimizer</span><br><span class="line">#0.001是学习率，学习的目标就是最小化损失函数</span><br><span class="line">train_step = tf.train.AdamOptimizer(0.001).minimize(cross_entropy)</span><br><span class="line"></span><br><span class="line">#接下来我们造一点训练数据</span><br><span class="line">rdm = RandomState(1)</span><br><span class="line">dataset_size = 128 #128 组训练数据</span><br><span class="line">X = rdm.rand(dataset_size, 2) #随机出来的训练数据输入</span><br><span class="line">Y = [[int(x1+x2&lt;1)] for (x1,x2) in X] #训练数据期望的输出</span><br><span class="line"></span><br><span class="line">#运行整个训练过程</span><br><span class="line">with tf.Session() as sess:</span><br><span class="line">    sess.run(tf.global_variables_initializer()) #初始化所有的变量</span><br><span class="line"></span><br><span class="line">    #变量初始化之后，看下w1和w2的当前值</span><br><span class="line">    print sess.run(w1)</span><br><span class="line">    print sess.run(w2)</span><br><span class="line"></span><br><span class="line">    #迭代5000次</span><br><span class="line">    for i in range(5000):</span><br><span class="line">        #每次采用batch_size组数据进行训练</span><br><span class="line">        start = (i*batch_size) % dataset_size</span><br><span class="line">        end = min(start + batch_size, dataset_size)</span><br><span class="line"></span><br><span class="line">        sess.run(train_step, feed_dict=&#123;x: X[start:end], y_:Y[start:end]&#125;)</span><br><span class="line"></span><br><span class="line">        #每100轮输出一下当前的训练结果：W1和W2和交叉墒</span><br><span class="line">        if i % 100 == 0:</span><br><span class="line">            total_entropy = sess.run(cross_entropy, feed_dict=&#123;x:X, y_:Y&#125;)</span><br><span class="line">            print(&quot;after %d training step, cross entropy is %g&quot; % (i, total_entropy))</span><br><span class="line"></span><br><span class="line">    print sess.run(w1)</span><br><span class="line">    print sess.run(w2)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">###</span><br><span class="line">2019-07-13 12:05:25.725879: I tensorflow/core/platform/cpu_feature_guard.cc:141] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA</span><br><span class="line"></span><br><span class="line">[[-0.8113182   1.4845988   0.06532937]</span><br><span class="line"> [-2.4427042   0.0992484   0.5912243 ]]</span><br><span class="line">[[-0.8113182 ]</span><br><span class="line"> [ 1.4845988 ]</span><br><span class="line"> [ 0.06532937]]</span><br><span class="line">after 0 training step, cross entropy is 1.89805</span><br><span class="line">after 100 training step, cross entropy is 1.62943</span><br><span class="line">after 200 training step, cross entropy is 1.40099</span><br><span class="line">after 300 training step, cross entropy is 1.19732</span><br><span class="line">after 400 training step, cross entropy is 1.02375</span><br><span class="line">after 500 training step, cross entropy is 0.887612</span><br><span class="line">after 600 training step, cross entropy is 0.790222</span><br><span class="line">after 700 training step, cross entropy is 0.727325</span><br><span class="line">after 800 training step, cross entropy is 0.689437</span><br><span class="line">after 900 training step, cross entropy is 0.667623</span><br><span class="line">after 1000 training step, cross entropy is 0.655075</span><br><span class="line">after 1100 training step, cross entropy is 0.647813</span><br><span class="line">after 1200 training step, cross entropy is 0.643196</span><br><span class="line">after 1300 training step, cross entropy is 0.639896</span><br><span class="line">after 1400 training step, cross entropy is 0.637246</span><br><span class="line">after 1500 training step, cross entropy is 0.635031</span><br><span class="line">after 1600 training step, cross entropy is 0.633027</span><br><span class="line">after 1700 training step, cross entropy is 0.631151</span><br><span class="line">after 1800 training step, cross entropy is 0.629368</span><br><span class="line">after 1900 training step, cross entropy is 0.627724</span><br><span class="line">after 2000 training step, cross entropy is 0.626172</span><br><span class="line">after 2100 training step, cross entropy is 0.624696</span><br><span class="line">after 2200 training step, cross entropy is 0.623293</span><br><span class="line">after 2300 training step, cross entropy is 0.622006</span><br><span class="line">after 2400 training step, cross entropy is 0.620801</span><br><span class="line">after 2500 training step, cross entropy is 0.619664</span><br><span class="line">after 2600 training step, cross entropy is 0.618592</span><br><span class="line">after 2700 training step, cross entropy is 0.617622</span><br><span class="line">after 2800 training step, cross entropy is 0.616723</span><br><span class="line">after 2900 training step, cross entropy is 0.615883</span><br><span class="line">after 3000 training step, cross entropy is 0.615096</span><br><span class="line">after 3100 training step, cross entropy is 0.614397</span><br><span class="line">after 3200 training step, cross entropy is 0.613756</span><br><span class="line">after 3300 training step, cross entropy is 0.61316</span><br><span class="line">after 3400 training step, cross entropy is 0.612608</span><br><span class="line">after 3500 training step, cross entropy is 0.612126</span><br><span class="line">after 3600 training step, cross entropy is 0.611689</span><br><span class="line">after 3700 training step, cross entropy is 0.611285</span><br><span class="line">after 3800 training step, cross entropy is 0.610913</span><br><span class="line">after 3900 training step, cross entropy is 0.610594</span><br><span class="line">after 4000 training step, cross entropy is 0.610309</span><br><span class="line">after 4100 training step, cross entropy is 0.610046</span><br><span class="line">after 4200 training step, cross entropy is 0.609804</span><br><span class="line">after 4300 training step, cross entropy is 0.609603</span><br><span class="line">after 4400 training step, cross entropy is 0.609423</span><br><span class="line">after 4500 training step, cross entropy is 0.609258</span><br><span class="line">after 4600 training step, cross entropy is 0.609106</span><br><span class="line">after 4700 training step, cross entropy is 0.608983</span><br><span class="line">after 4800 training step, cross entropy is 0.608874</span><br><span class="line">after 4900 training step, cross entropy is 0.608772</span><br><span class="line">[[ 0.02476983  0.56948674  1.6921941 ]</span><br><span class="line"> [-2.1977348  -0.23668921  1.1143895 ]]</span><br><span class="line">[[-0.45544702]</span><br><span class="line"> [ 0.49110925]</span><br><span class="line"> [-0.98110336]]</span><br></pre></td></tr></table></figure>
         
       
     </div>
 
     
-
-    
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
   </div>
   
   
@@ -417,59 +266,35 @@
   </article>
 
     
-        
-
+        <article itemscope itemtype="http://schema.org/Article">
   
   
   
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/03/Kubernetes三种Client的使用示例/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="韦远科">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="韦远科的博客">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/07/03/Kubernetes三种Client的使用示例/" class="post-title-link" itemprop="url">Kubernetes三种Client的使用示例</a>
-              
+        <h1 class="post-title" itemprop="name headline">
             
-          </h1>
-        
+            <a href="/2019/07/03/Kubernetes三种Client的使用示例/" class="post-title-link" itemprop="url">Kubernetes三种Client的使用示例</a>
+          
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
+              <span class="post-meta-item-text">Posted on</span>
 
               
                 
@@ -478,8 +303,6 @@
               <time title="Created: 2019-07-03 16:55:45" itemprop="dateCreated datePublished" datetime="2019-07-03T16:55:45+08:00">2019-07-03</time>
             </span>
           
-
-          
             
 
             
@@ -487,9 +310,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
+                <span class="post-meta-item-text">Edited on</span>
                 <time title="Modified: 2019-08-06 08:53:22" itemprop="dateModified" datetime="2019-08-06T08:53:22+08:00">2019-08-06</time>
               </span>
             
@@ -497,23 +318,8 @@
 
           
 
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
         </div>
       </header>
-    
 
     
     
@@ -521,12 +327,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>kubernetes的Client库——go-client中提供了如下三种类型的client</p>
+          <p>kubernetes的Client库——go-client中提供了如下三种类型的client</p>
 <p>ClientSet：可以访问集群中所有的原生资源，如pods、deployment等，是最常用的一种</p>
 <p>dynamicClient: 可以处理集群中所有的资源，包括crd（自定义资源），另外它的返回是一个map[string]interface{}类型；目前主要用在garbage collector和namespace controller中。</p>
 <p>RestClient：前面两种client的基础， 更为底层一些。</p>
@@ -534,40 +335,17 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">	&quot;flag&quot;</span><br><span class="line">	&quot;fmt&quot;</span><br><span class="line">	&quot;k8s.io/api/core/v1&quot;</span><br><span class="line">	v12 &quot;k8s.io/apimachinery/pkg/apis/meta/v1&quot;</span><br><span class="line">	&quot;k8s.io/apimachinery/pkg/runtime&quot;</span><br><span class="line">	&quot;k8s.io/apimachinery/pkg/runtime/schema&quot;</span><br><span class="line">	&quot;k8s.io/apimachinery/pkg/runtime/serializer&quot;</span><br><span class="line">	&quot;k8s.io/client-go/dynamic&quot;</span><br><span class="line">	&quot;k8s.io/client-go/kubernetes&quot;</span><br><span class="line">	&quot;k8s.io/client-go/kubernetes/scheme&quot;</span><br><span class="line">	&quot;k8s.io/client-go/rest&quot;</span><br><span class="line">	&quot;k8s.io/client-go/tools/clientcmd&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">var (</span><br><span class="line">	//集群配置文件路径</span><br><span class="line">	kubeconfigStr = flag.String(&quot;kubeconfig&quot;, &quot;default value&quot;, &quot;kubernetes config file&quot;)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func main()  &#123;</span><br><span class="line">	//解析参数</span><br><span class="line">	flag.Parse()</span><br><span class="line"></span><br><span class="line">	testClientSet()</span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;\nrest&quot;)</span><br><span class="line"></span><br><span class="line">	testRestClient()</span><br><span class="line"></span><br><span class="line">	fmt.Println(&quot;\n.....&quot;)</span><br><span class="line">	testDynamicClient()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func testRestClient() &#123;</span><br><span class="line">	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfigStr)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    //原生接口都在/api下，扩展接口在/apis下</span><br><span class="line">	config.APIPath = &quot;/api&quot;</span><br><span class="line">	//pods资源相关的group为空</span><br><span class="line">	config.GroupVersion = &amp;schema.GroupVersion&#123;</span><br><span class="line">		Group:    &quot;&quot;,</span><br><span class="line">		Version: &quot;v1&quot;,</span><br><span class="line">	&#125;</span><br><span class="line">	//序列化方式，目前json和protocal buf</span><br><span class="line">	config.ContentType = runtime.ContentTypeJSON</span><br><span class="line">	config.NegotiatedSerializer = serializer.DirectCodecFactory&#123;CodecFactory: scheme.Codecs&#125;</span><br><span class="line"></span><br><span class="line">	restClient, err := rest.RESTClientFor(config)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	podList := v1.PodList&#123;&#125;</span><br><span class="line">	//除了Do()方法之外，还有DoRaw()，返回原始的bytes； Do()会做一下类型的转化</span><br><span class="line">	restClient.Get().Resource(&quot;pods&quot;).Namespace(&quot;&quot;).Do().Into(&amp;podList)</span><br><span class="line"></span><br><span class="line">	fmt.Println(podList)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func testClientSet() &#123;</span><br><span class="line">	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfigStr)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	clientset, err := kubernetes.NewForConfig(config)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//一行代码指定group、version、resource、以及动作</span><br><span class="line">	podList, err := clientset.CoreV1().Pods(&quot;&quot;).List(v12.ListOptions&#123;&#125;)</span><br><span class="line"></span><br><span class="line">	fmt.Println(podList.Items)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func testDynamicClient() &#123;</span><br><span class="line">	config, err := clientcmd.BuildConfigFromFlags(&quot;&quot;, *kubeconfigStr)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	dynamicClient, err := dynamic.NewForConfig(config)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		panic(err)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	//指定group、version以及要访问的资源 </span><br><span class="line">	testrcGVR := schema.GroupVersionResource&#123;</span><br><span class="line">		Group:    &quot;&quot;,</span><br><span class="line">		Version:  &quot;v1&quot;,</span><br><span class="line">		Resource: &quot;pods&quot;,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	unstr, err := dynamicClient.Resource(testrcGVR).List(v12.ListOptions&#123;&#125;)</span><br><span class="line"></span><br><span class="line">	fmt.Println(unstr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
-          
         
       
     </div>
 
     
-
-    
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
   </div>
   
   
@@ -575,59 +353,35 @@
   </article>
 
     
-        
-
+        <article itemscope itemtype="http://schema.org/Article">
   
   
   
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/03/使用-client-go-控制原生及拓展的-Kubernetes-Controller-API/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="韦远科">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="韦远科的博客">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/07/03/使用-client-go-控制原生及拓展的-Kubernetes-Controller-API/" class="post-title-link" itemprop="url">使用 client-go 控制原生及拓展的 Kubernetes Controller/API</a>
-              
+        <h1 class="post-title" itemprop="name headline">
             
-          </h1>
-        
+            <a href="/2019/07/03/使用-client-go-控制原生及拓展的-Kubernetes-Controller-API/" class="post-title-link" itemprop="url">使用 client-go 控制原生及拓展的 Kubernetes Controller/API</a>
+          
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
+              <span class="post-meta-item-text">Posted on</span>
 
               
                 
@@ -636,8 +390,6 @@
               <time title="Created: 2019-07-03 15:05:53" itemprop="dateCreated datePublished" datetime="2019-07-03T15:05:53+08:00">2019-07-03</time>
             </span>
           
-
-          
             
 
             
@@ -645,9 +397,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
+                <span class="post-meta-item-text">Edited on</span>
                 <time title="Modified: 2019-08-06 08:53:22" itemprop="dateModified" datetime="2019-08-06T08:53:22+08:00">2019-08-06</time>
               </span>
             
@@ -655,23 +405,8 @@
 
           
 
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
         </div>
       </header>
-    
 
     
     
@@ -679,48 +414,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>google xuchao的介绍，看完之后收获很大，故而分享出来，希望更多人看到。</p>
+          <p>google xuchao的介绍，看完之后收获很大，故而分享出来，希望更多人看到。</p>
 <p><a href="https://v.qq.com/txp/iframe/player.html?vid=c03641vzw2m" target="_blank" rel="noopener">腾讯视频地址</a></p>
 
-          
         
       
     </div>
 
     
-
-    
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
   </div>
   
   
@@ -728,59 +435,35 @@
   </article>
 
     
-        
-
+        <article itemscope itemtype="http://schema.org/Article">
   
   
   
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/02/DEMO：基于Kubernetes的CRD-Go-client-构建的一个查询pod详细信息的示例/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="韦远科">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="韦远科的博客">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/07/02/DEMO：基于Kubernetes的CRD-Go-client-构建的一个查询pod详细信息的示例/" class="post-title-link" itemprop="url">DEMO：基于Kubernetes的CRD & Go-client 构建的一个查询pod详细信息的示例</a>
-              
+        <h1 class="post-title" itemprop="name headline">
             
-          </h1>
-        
+            <a href="/2019/07/02/DEMO：基于Kubernetes的CRD-Go-client-构建的一个查询pod详细信息的示例/" class="post-title-link" itemprop="url">DEMO：基于Kubernetes的CRD & Go-client 构建的一个查询pod详细信息的示例</a>
+          
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
+              <span class="post-meta-item-text">Posted on</span>
 
               
                 
@@ -789,8 +472,6 @@
               <time title="Created: 2019-07-02 11:49:32" itemprop="dateCreated datePublished" datetime="2019-07-02T11:49:32+08:00">2019-07-02</time>
             </span>
           
-
-          
             
 
             
@@ -798,9 +479,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
+                <span class="post-meta-item-text">Edited on</span>
                 <time title="Modified: 2019-08-06 08:53:22" itemprop="dateModified" datetime="2019-08-06T08:53:22+08:00">2019-08-06</time>
               </span>
             
@@ -808,23 +487,8 @@
 
           
 
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
         </div>
       </header>
-    
 
     
     
@@ -832,12 +496,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>本文是一个示例程序，展示一下如何基于Kubernetes的CRD（Custom Resource Defination）&amp; Go-client构建一个查询Pod详细信息的服务。</p>
+          <p>本文是一个示例程序，展示一下如何基于Kubernetes的CRD（Custom Resource Defination）&amp; Go-client构建一个查询Pod详细信息的服务。</p>
 <p>该服务运行起来后，可以通过标准的kubernetes api接口，基于CRD来查询某个Pod的详细信息。</p>
 <p>代码的地址在：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/weiyuanke/PodInfoLookup</span><br></pre></td></tr></table></figure>
@@ -852,40 +511,17 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f yaml/pod.yaml </span><br><span class="line"></span><br><span class="line">#服务会监听到pod的创建，同时将该pod的相关信息写入Testcr资源中，</span><br><span class="line">add:  default/nginx</span><br><span class="line"></span><br><span class="line">current list:</span><br><span class="line">&amp;&#123;map[kind:Testcr metadata:map[generation:1 name:29b36e2c6835dded8a115aee874d1ddc resourceVersion:113140 selfLink:/apis/stable.example.com/v1/testcrs/29b36e2c6835dded8a115aee874d1ddc uid:a2440f67-9ca4-11e9-9f23-080027f1737d creationTimestamp:2019-07-02T08:37:32Z] spec:map[podip:nginx podkey:a242bc2d-9ca4-11e9-9f23-080027f1737d podname:29b36e2c6835dded8a115aee874d1ddc poduid:] apiVersion:stable.example.com/v1]&#125;</span><br><span class="line"></span><br><span class="line">#同理，删除pod，会导致Testrc中对应的资源被删除</span><br><span class="line">kubectl delete -f yaml/pod.yaml </span><br><span class="line"></span><br><span class="line">delete:  default/nginx</span><br><span class="line"></span><br><span class="line">current list:</span><br></pre></td></tr></table></figure>
 
 
-          
         
       
     </div>
 
     
-
-    
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
   </div>
   
   
@@ -893,59 +529,35 @@
   </article>
 
     
-        
-
+        <article itemscope itemtype="http://schema.org/Article">
   
   
   
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/01/Custom-Resource-Definition/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="韦远科">
-      <meta itemprop="description" content>
+      <meta itemprop="description" content="">
       <meta itemprop="image" content="/images/avatar.gif">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="韦远科的博客">
     </span>
-
-    
       <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2019/07/01/Custom-Resource-Definition/" class="post-title-link" itemprop="url">Custom Resource Definition简介</a>
-              
+        <h1 class="post-title" itemprop="name headline">
             
-          </h1>
-        
+            <a href="/2019/07/01/Custom-Resource-Definition/" class="post-title-link" itemprop="url">Custom Resource Definition简介</a>
+          
+        </h1>
 
         <div class="post-meta">
-
-          
-          
-          
-
-          
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-calendar-o"></i>
               </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
+              <span class="post-meta-item-text">Posted on</span>
 
               
                 
@@ -954,8 +566,6 @@
               <time title="Created: 2019-07-01 14:33:30" itemprop="dateCreated datePublished" datetime="2019-07-01T14:33:30+08:00">2019-07-01</time>
             </span>
           
-
-          
             
 
             
@@ -963,9 +573,7 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
-                
-                  <span class="post-meta-item-text">Edited on</span>
-                
+                <span class="post-meta-item-text">Edited on</span>
                 <time title="Modified: 2019-08-06 08:53:22" itemprop="dateModified" datetime="2019-08-06T08:53:22+08:00">2019-08-06</time>
               </span>
             
@@ -973,23 +581,8 @@
 
           
 
-          
-          
-
-          
-
-          
-
-          <br>
-          
-
-          
-
-          
-
         </div>
       </header>
-    
 
     
     
@@ -997,50 +590,22 @@
     <div class="post-body" itemprop="articleBody">
 
       
-      
-
-      
-        
-          
-            <p>1、什么是自定义资源（Custom Resource）？</p>
+          <p>1、什么是自定义资源（Custom Resource）？</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">自定义资源是对kubernetes api的扩展，用户通过配置文件（Custom Resource Definition）</span><br><span class="line">定义 资源 后，就可以通过kubernetes的API来操作此类资源。</span><br><span class="line"></span><br><span class="line">仅仅通过API对资源进行操作其实意义不大，一般会再配合一个自定义的控制器，来实现一个声明式的</span><br><span class="line">API，在自定义的控制器中监听该资源相关的事件，并执行对应的业务逻辑。</span><br></pre></td></tr></table></figure>
 
 <p>2、自定义资源 -&gt; 自定义控制器的整个流程</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">API server（包含有自定义资源） -&gt; Lister&amp;Watcher -&gt; Reflector -&gt; Delta Queue -&gt;</span><br><span class="line">Informer -&gt; 存入Indexer并同时触发相关的Handler -&gt; work queue -&gt; 自定义控制器</span><br></pre></td></tr></table></figure>
-          
         
       
     </div>
 
     
-
-    
-
     
     
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
   </div>
   
   
@@ -1048,7 +613,7 @@
   </article>
 
     
-  </section>
+  </div>
 
   
   <nav class="pagination">
@@ -1056,12 +621,10 @@
   </nav>
 
 
-
           </div>
           
 
         </div>
-        
           
   
   <div class="sidebar-toggle">
@@ -1072,25 +635,29 @@
     </div>
   </div>
 
-  <aside id="sidebar" class="sidebar">
+  <aside class="sidebar">
     <div class="sidebar-inner">
 
-      
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
 
-      
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
-        <div class="site-overview">
-
-          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">韦远科</p>
-  <div class="site-description motion-element" itemprop="description"></div>
+  <div class="site-description" itemprop="description"></div>
 </div>
-
-
   <nav class="site-state motion-element">
-    
       <div class="site-state-item site-state-posts">
         
           <a href="/archives/">
@@ -1099,10 +666,6 @@
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
-    
-
-    
-
     
       
       
@@ -1129,31 +692,13 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-          
-          
-        </div>
       </div>
-
-      
-
-      
 
     </div>
   </aside>
   <div id="sidebar-dimmer"></div>
 
 
-        
       </div>
     </main>
 
@@ -1164,27 +709,16 @@
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">韦远科</span>
-
-  
-
-  
 </div>
-
-
   <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
-
-
-
   <span class="post-meta-divider">|</span>
-
-
-
-  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
-
-
-
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.3.0</div>
 
         
+
+
+
+
 
 
 
@@ -1196,118 +730,45 @@
         
       </div>
     </footer>
-
-    
-      <div class="back-to-top">
-        <i class="fa fa-arrow-up"></i>
-        
-      </div>
-    
-
-    
-
-
   </div>
 
   
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-
-
-
-
-
-
-  
-  <script src="/lib/jquery/index.js?v=3.4.1"></script>
-
-  
+  <script src="/lib/anime.min.js?v=3.1.0"></script>
   <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
-
-  
   <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
-
-
-
-
-  <script src="/js/utils.js?v=7.2.0"></script>
-
-  <script src="/js/motion.js?v=7.2.0"></script>
-
-
-
-  
-  
-
-
-  <script src="/js/schemes/muse.js?v=7.2.0"></script>
+<script src="/js/utils.js?v=7.3.0"></script><script src="/js/motion.js?v=7.3.0"></script>
+<script src="/js/schemes/muse.js?v=7.3.0"></script>
+<script src="/js/next-boot.js?v=7.3.0"></script>
 
 
 
   
 
-  <script src="/js/next-boot.js?v=7.2.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   
 
   
-
-  
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   
 
