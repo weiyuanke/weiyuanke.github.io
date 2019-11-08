@@ -220,7 +220,7 @@
                 
               
 
-              <time title="Created: 2019-11-08 12:37:52 / Modified: 12:38:43" itemprop="dateCreated datePublished" datetime="2019-11-08T12:37:52+08:00">2019-11-08</time>
+              <time title="Created: 2019-11-08 12:37:52 / Modified: 12:51:03" itemprop="dateCreated datePublished" datetime="2019-11-08T12:37:52+08:00">2019-11-08</time>
             </span>
           
             
@@ -259,8 +259,8 @@
 <p>网上有一个runc 和 runv 运行示例的文章，参考: <a href="https://feisky.xyz/posts/2016-04-28-runc/" target="_blank" rel="noopener">链接</a></p>
 <p>说回到kubernetes，k8s抽象出了一个CRI接口。</p>
 <p>kubelet 通过该接口与底层不同的容器运行时进行交互，从而实现解耦。<br>其中的关系如下图<br><img src="https://img-blog.csdnimg.cn/20191108120751489.png" alt="在这里插入图片描述"><br>kubelet通过gRPC方式调用CRI的相关接口，CRI shim是该接口的一个实现。</p>
-<p>kubelet有一个选项“–container-runtime”，<br>默认为docker，可以理解为非CRI模式。<br>设置为remote的时候，可以认为是启用了CRI模式，通过另外一个选项<br>–container-runtime-path-endpoint=<path></path> 来指定CRI服务的地址，一般是一个Linux 本地Socket。</p>
-<p>kubelet会通过指定的CRI地址来进行容器的管理。</p>
+<p>kubelet有一个选项“–container-runtime”，<br>默认为docker，可以理解为非CRI模式。<br>设置为remote的时候，可以认为是启用了CRI模式，通过另外一个选项<br>–container-runtime-path-endpoint=<path></path> 来指定CRI服务的地址，一般是一个Linux 本地Socket。<br>kubelet会通过指定的CRI地址来进行容器的管理。</p>
+<p>这个图看着可能会比较清楚<br><img src="https://img-blog.csdnimg.cn/20191108124942611.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXl1YW5rZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 
         
       
