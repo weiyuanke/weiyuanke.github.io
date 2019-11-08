@@ -61,8 +61,9 @@ kubelet有一个选项“--container-runtime”，
 默认为docker，可以理解为非CRI模式。
 设置为remote的时候，可以认为是启用了CRI模式，通过另外一个选项
 --container-runtime-path-endpoint=<path> 来指定CRI服务的地址，一般是一个Linux 本地Socket。
-
 kubelet会通过指定的CRI地址来进行容器的管理。
 
+这个图看着可能会比较清楚
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20191108124942611.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXl1YW5rZQ==,size_16,color_FFFFFF,t_70)
 
 
