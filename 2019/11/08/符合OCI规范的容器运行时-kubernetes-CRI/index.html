@@ -55,19 +55,20 @@
   };
 </script>
 
-  <meta name="description" content="本文是一个示例程序，展示一下如何基于Kubernetes的CRD（Custom Resource Defination）&amp;amp; Go-client构建一个查询Pod详细信息的服务。 该服务运行起来后，可以通过标准的kubernetes api接口，基于CRD来查询某个Pod的详细信息。 代码的地址在： 1https://github.com/weiyuanke/PodInfoLookup  首">
-<meta name="keywords" content="kubernetes">
+  <meta name="description" content="参考前一篇文章 目前的docker已经不是之前的docker了，技术栈进行了分层。docker cli -&amp;gt; dockerd -&amp;gt; containerd -&amp;gt; oci implementation OCI规范，简单来说，包含容器规范和镜像规范，具体参考：link由于引入了OCI，我们可以近乎透明无缝的替换 “docker run”命令 之下的具体实现。根据自己业务场景的需求，可以">
 <meta property="og:type" content="article">
-<meta property="og:title" content="DEMO：基于Kubernetes的CRD &amp; Go-client 构建的一个查询pod详细信息的示例">
-<meta property="og:url" content="http://yoursite.com/2019/07/02/DEMO：基于Kubernetes的CRD-Go-client-构建的一个查询pod详细信息的示例/index.html">
+<meta property="og:title" content="符合OCI规范的容器运行时 &amp; kubernetes CRI">
+<meta property="og:url" content="http://yoursite.com/2019/11/08/符合OCI规范的容器运行时-kubernetes-CRI/index.html">
 <meta property="og:site_name" content="韦远科的博客">
-<meta property="og:description" content="本文是一个示例程序，展示一下如何基于Kubernetes的CRD（Custom Resource Defination）&amp;amp; Go-client构建一个查询Pod详细信息的服务。 该服务运行起来后，可以通过标准的kubernetes api接口，基于CRD来查询某个Pod的详细信息。 代码的地址在： 1https://github.com/weiyuanke/PodInfoLookup  首">
+<meta property="og:description" content="参考前一篇文章 目前的docker已经不是之前的docker了，技术栈进行了分层。docker cli -&amp;gt; dockerd -&amp;gt; containerd -&amp;gt; oci implementation OCI规范，简单来说，包含容器规范和镜像规范，具体参考：link由于引入了OCI，我们可以近乎透明无缝的替换 “docker run”命令 之下的具体实现。根据自己业务场景的需求，可以">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-08-06T00:53:22.868Z">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191108120751489.png">
+<meta property="og:updated_time" content="2019-11-08T04:38:43.250Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="DEMO：基于Kubernetes的CRD &amp; Go-client 构建的一个查询pod详细信息的示例">
-<meta name="twitter:description" content="本文是一个示例程序，展示一下如何基于Kubernetes的CRD（Custom Resource Defination）&amp;amp; Go-client构建一个查询Pod详细信息的服务。 该服务运行起来后，可以通过标准的kubernetes api接口，基于CRD来查询某个Pod的详细信息。 代码的地址在： 1https://github.com/weiyuanke/PodInfoLookup  首">
-  <link rel="canonical" href="http://yoursite.com/2019/07/02/DEMO：基于Kubernetes的CRD-Go-client-构建的一个查询pod详细信息的示例/">
+<meta name="twitter:title" content="符合OCI规范的容器运行时 &amp; kubernetes CRI">
+<meta name="twitter:description" content="参考前一篇文章 目前的docker已经不是之前的docker了，技术栈进行了分层。docker cli -&amp;gt; dockerd -&amp;gt; containerd -&amp;gt; oci implementation OCI规范，简单来说，包含容器规范和镜像规范，具体参考：link由于引入了OCI，我们可以近乎透明无缝的替换 “docker run”命令 之下的具体实现。根据自己业务场景的需求，可以">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191108120751489.png">
+  <link rel="canonical" href="http://yoursite.com/2019/11/08/符合OCI规范的容器运行时-kubernetes-CRI/">
 
 
 <script id="page-configurations">
@@ -81,7 +82,7 @@
   };
 </script>
 
-  <title>DEMO：基于Kubernetes的CRD & Go-client 构建的一个查询pod详细信息的示例 | 韦远科的博客</title>
+  <title>符合OCI规范的容器运行时 & kubernetes CRI | 韦远科的博客</title>
   <meta name="generator" content="Hexo 3.9.0">
   
 
@@ -197,7 +198,7 @@
   
   
   <div class="post-block post">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/02/DEMO：基于Kubernetes的CRD-Go-client-构建的一个查询pod详细信息的示例/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/08/符合OCI规范的容器运行时-kubernetes-CRI/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="韦远科">
@@ -209,7 +210,7 @@
       <meta itemprop="name" content="韦远科的博客">
     </span>
       <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">DEMO：基于Kubernetes的CRD & Go-client 构建的一个查询pod详细信息的示例
+        <h1 class="post-title" itemprop="name headline">符合OCI规范的容器运行时 & kubernetes CRI
 
           
         </h1>
@@ -225,19 +226,11 @@
                 
               
 
-              <time title="Created: 2019-07-02 11:49:32" itemprop="dateCreated datePublished" datetime="2019-07-02T11:49:32+08:00">2019-07-02</time>
+              <time title="Created: 2019-11-08 12:37:52 / Modified: 12:38:43" itemprop="dateCreated datePublished" datetime="2019-11-08T12:37:52+08:00">2019-11-08</time>
             </span>
           
             
 
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-08-06 08:53:22" itemprop="dateModified" datetime="2019-08-06T08:53:22+08:00">2019-08-06</time>
-              </span>
             
           
 
@@ -252,20 +245,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文是一个示例程序，展示一下如何基于Kubernetes的CRD（Custom Resource Defination）&amp; Go-client构建一个查询Pod详细信息的服务。</p>
-<p>该服务运行起来后，可以通过标准的kubernetes api接口，基于CRD来查询某个Pod的详细信息。</p>
-<p>代码的地址在：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/weiyuanke/PodInfoLookup</span><br></pre></td></tr></table></figure>
+        <p>参考<a href="https://blog.csdn.net/weiyuanke/article/details/90639505" target="_blank" rel="noopener">前一篇文章</a></p>
+<p>目前的docker已经不是之前的docker了，技术栈进行了分层。<br>docker cli -&gt; dockerd -&gt; containerd -&gt; oci implementation</p>
+<p>OCI规范，简单来说，包含容器规范和镜像规范，具体参考：<br><a href="https://github.com/opencontainers/runtime-spec" target="_blank" rel="noopener">link</a><br>由于引入了OCI，我们可以近乎透明无缝的替换 “docker run”命令 之下的具体实现。<br>根据自己业务场景的需求，可以选择高性能的容器运行时，也可以选择性能不那么高但安全性更好的运行时。</p>
+<p>目前符合OCI规范的容器运行时有：</p>
+<ul>
+<li>runc， docker默认的运行时，与宿主机共享内核，利用cgroup做资源隔离，安全性不是很高，由于内核共享，性能最好</li>
+<li>runv，基于hypervisor的容器运行时，有自己单独的内核，安全性好很多</li>
+<li>kata，被蚂蚁收了，号称“容器的速度，虚拟机的安全”，貌似是基于runv做的</li>
+<li>gvisor，谷歌搞的，比runc安全，比VM性能要好。有一个用户空间的内核，会拦截应用程序的系统调用，目前没有实现所有的系统调用，因此不是所有的应用都可以运行</li>
+</ul>
+<p>目前docker默认使用的容器运行时runc。</p>
+<p>docker命令行有一个参数：runtime，可以制定底层的容器运行时，如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --runtime=runc hello-world</span><br></pre></td></tr></table></figure>
 
-<p>首先我们基于配置文件创建一个我们自定义的资源——Testcr</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#PodInfoLookup/yaml/testcrd.yaml</span><br><span class="line"></span><br><span class="line">#创建了一个名为Testcr的自定义资源类型</span><br><span class="line">#group：stable.example.com</span><br><span class="line">#version：v1</span><br><span class="line">#resource：testcrs</span><br><span class="line">$kubectl apply -f yaml/testcrd.yaml</span><br></pre></td></tr></table></figure>
+<p>runc官方有一个实例，介绍如何用runc运行一个容器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">EXAMPLE:</span><br><span class="line">  To run docker&apos;s hello-world container one needs to set the args parameter</span><br><span class="line">in the spec to call hello. This can be done using the sed command or a text</span><br><span class="line">editor. The following commands create a bundle for hello-world, change the</span><br><span class="line">default args parameter in the spec from &quot;sh&quot; to &quot;/hello&quot;, then run the hello</span><br><span class="line">command in a new hello-world container named container1:</span><br><span class="line"></span><br><span class="line">    mkdir hello</span><br><span class="line">    cd hello</span><br><span class="line">    docker pull hello-world</span><br><span class="line">    docker export $(docker create hello-world) &gt; hello-world.tar</span><br><span class="line">    mkdir rootfs</span><br><span class="line">    tar -C rootfs -xf hello-world.tar</span><br><span class="line">    runc spec</span><br><span class="line">    sed -i &apos;s;&quot;sh&quot;;&quot;/hello&quot;;&apos; config.json</span><br><span class="line">    runc run container1</span><br></pre></td></tr></table></figure>
 
-<p>本文假定本地已经有一个kubernetes集群在运行了，如果没有的话，可以基于minikube安装一个。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#拉取最新代码：</span><br><span class="line">go get github.com/weiyuanke/PodInfoLookup</span><br><span class="line"></span><br><span class="line">#启动服务</span><br><span class="line">go run main.go --kubeconfig=/Users/yuankewei/.kube/config</span><br></pre></td></tr></table></figure>
-
-<p>在另外一个终端创建一个pod</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f yaml/pod.yaml </span><br><span class="line"></span><br><span class="line">#服务会监听到pod的创建，同时将该pod的相关信息写入Testcr资源中，</span><br><span class="line">add:  default/nginx</span><br><span class="line"></span><br><span class="line">current list:</span><br><span class="line">&amp;&#123;map[kind:Testcr metadata:map[generation:1 name:29b36e2c6835dded8a115aee874d1ddc resourceVersion:113140 selfLink:/apis/stable.example.com/v1/testcrs/29b36e2c6835dded8a115aee874d1ddc uid:a2440f67-9ca4-11e9-9f23-080027f1737d creationTimestamp:2019-07-02T08:37:32Z] spec:map[podip:nginx podkey:a242bc2d-9ca4-11e9-9f23-080027f1737d podname:29b36e2c6835dded8a115aee874d1ddc poduid:] apiVersion:stable.example.com/v1]&#125;</span><br><span class="line"></span><br><span class="line">#同理，删除pod，会导致Testrc中对应的资源被删除</span><br><span class="line">kubectl delete -f yaml/pod.yaml </span><br><span class="line"></span><br><span class="line">delete:  default/nginx</span><br><span class="line"></span><br><span class="line">current list:</span><br></pre></td></tr></table></figure>
-
+<p>网上有一个runc 和 runv 运行示例的文章，参考: <a href="https://feisky.xyz/posts/2016-04-28-runc/" target="_blank" rel="noopener">链接</a></p>
+<p>说回到kubernetes，k8s抽象出了一个CRI接口。</p>
+<p>kubelet 通过该接口与底层不同的容器运行时进行交互，从而实现解耦。<br>其中的关系如下图<br><img src="https://img-blog.csdnimg.cn/20191108120751489.png" alt="在这里插入图片描述"><br>kubelet通过gRPC方式调用CRI的相关接口，CRI shim是该接口的一个实现。</p>
+<p>kubelet有一个选项“–container-runtime”，<br>默认为docker，可以理解为非CRI模式。<br>设置为remote的时候，可以认为是启用了CRI模式，通过另外一个选项<br>–container-runtime-path-endpoint=<path></path> 来指定CRI服务的地址，一般是一个Linux 本地Socket。</p>
+<p>kubelet会通过指定的CRI地址来进行容器的管理。</p>
 
     </div>
 
@@ -276,23 +277,14 @@
       
 
       <footer class="post-footer">
-          
-            
-          
-          <div class="post-tags">
-            
-              <a href="/tags/kubernetes/" rel="tag"># kubernetes</a>
-            
-          </div>
-        
 
         
 
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/07/01/Custom-Resource-Definition/" rel="next" title="Custom Resource Definition简介">
-                  <i class="fa fa-chevron-left"></i> Custom Resource Definition简介
+                <a href="/2019/08/29/java服务端对接apns的几个sdk/" rel="next" title="java服务端对接apns的几个sdk">
+                  <i class="fa fa-chevron-left"></i> java服务端对接apns的几个sdk
                 </a>
               
             </div>
@@ -300,10 +292,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/07/03/使用-client-go-控制原生及拓展的-Kubernetes-Controller-API/" rel="prev" title="使用 client-go 控制原生及拓展的 Kubernetes Controller/API">
-                  使用 client-go 控制原生及拓展的 Kubernetes Controller/API <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
