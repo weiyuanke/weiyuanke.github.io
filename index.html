@@ -191,6 +191,84 @@
   
   
   <div class="post-block home">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/20/PodWorkers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="韦远科">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="韦远科的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+            
+            <a href="/2019/11/20/PodWorkers/" class="post-title-link" itemprop="url">PodWorkers</a>
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-11-20 13:59:36 / Modified: 14:00:05" itemprop="dateCreated datePublished" datetime="2019-11-20T13:59:36+08:00">2019-11-20</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>PodWorkers是最终“同步”pod状态的一块逻辑，<br>“同步”在这里的含义是：确保kubelet所在节点的Pod状态和etcd中的状态一致，该增加的增加，该删除的删除，该更新的更新。</p>
+<p>“同步”动作的触发有几个方式：<br>（1）通过文件、apiserver、http方式监听到的变化<br>（2）定时器触发，例如每隔10s</p>
+<p>PodWorkers的入口是UpdatePod</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">type podWorkers struct &#123;</span><br><span class="line">    // key是pod的ID，value是一个chan，会有一个gorouting监听该chann</span><br><span class="line">    // 死循环一般的处理该Pod上的所有变动</span><br><span class="line">	podUpdates map[types.UID]chan UpdatePodOptions</span><br><span class="line">	</span><br><span class="line">	// 记录每个pod对应的gorouting当前的工作状态</span><br><span class="line">	isWorking map[types.UID]bool</span><br><span class="line">	</span><br><span class="line">	// 每个Pod对应的gorouting处理完相关逻辑之后，会把Pod的ID塞入</span><br><span class="line">	// workQueue。定时器会触发kubelet，kubelet会从workQueue里</span><br><span class="line">	// 获取需要同步的Pod，然后调用PodWorkers的UpdatePod方法，</span><br><span class="line">	// 触发新一轮的同步</span><br><span class="line">	workQueue queue.WorkQueue</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单的示意图<br><img src="https://img-blog.csdnimg.cn/20191120135846524.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXl1YW5rZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+          <div class="post-eof"></div>
+        
+      </footer>
+  </div>
+  
+  
+  
+  </article>
+
+    
+        <article itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block home">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/08/符合OCI规范的容器运行时-kubernetes-CRI/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -541,115 +619,6 @@
   </article>
 
     
-        <article itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block home">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/29/本地数据库引擎WiredTiger测试记录/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="韦远科">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="韦远科的博客">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-            
-            <a href="/2019/07/29/本地数据库引擎WiredTiger测试记录/" class="post-title-link" itemprop="url">本地数据库引擎WiredTiger测试记录</a>
-          
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              
-                
-              
-
-              <time title="Created: 2019-07-29 18:45:11" itemprop="dateCreated datePublished" datetime="2019-07-29T18:45:11+08:00">2019-07-29</time>
-            </span>
-          
-            
-
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-08-06 08:53:22" itemprop="dateModified" datetime="2019-08-06T08:53:22+08:00">2019-08-06</time>
-              </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>项目上有一个性能优化的需求，需要进一步优化远程调用Redis导致的RT偏高问题，目前的想法是做两级缓存，通过加入一个基于嵌入式数据库引擎的本地缓存，来降低对远端redis的依赖；大致的结构如下：</p>
-<p>业务服务 —&gt; 本地数据库引擎 -&gt; 远端redis</p>
-<p>之所以用数据库引擎，是因为在满足QPS的情况下，想尽可能本地化更多的数据，直接用内存太奢侈了。</p>
-<p>对于读操作：优先读取本地，本地没有的话，再读区远端redis，远端的值会写回到本地</p>
-<p>对于写操作：直接写本地，然后后台线程异步同步至远端，其中业务逻辑可以容忍短时的数据不一致情况。</p>
-<p>WiredTiger是mongodb收购过来的一个存储引擎，从2.3版本之后，便是mongodb的默认引擎。</p>
-<p>除了WiredTiger之外，一些本地的嵌入式数据库引擎还有：<a href="http://embedded-databases.com/" target="_blank" rel="noopener">地址</a></p>
-<p>相比Google的LevelDb引擎的性能对比：<a href="https://github.com/wiredtiger/wiredtiger/wiki/LevelDB-Benchmark" target="_blank" rel="noopener">链接</a></p>
-<p>本文主要记录WiredTiger安装的流程，以及一个简单的Java操作示例，安装的环境：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">$system_profiler SPSoftwareDataType</span><br><span class="line">Software:</span><br><span class="line"></span><br><span class="line">    System Software Overview:</span><br><span class="line"></span><br><span class="line">      System Version: macOS 10.14.6 (18G48f)</span><br><span class="line">      Kernel Version: Darwin 18.7.0</span><br><span class="line">      Boot Volume: Untitled</span><br><span class="line">      Boot Mode: Normal</span><br><span class="line">      Computer Name: yuanke’s MacBook Ali</span><br><span class="line">      User Name: yuanke wei (yuankewei)</span><br><span class="line">      Secure Virtual Memory: Enabled</span><br><span class="line">      System Integrity Protection: Enabled</span><br><span class="line">      Time since boot: 17 days 5:20</span><br></pre></td></tr></table></figure>
-
-<p>（1）git下载相关的代码，并切换到稳定分支</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$git clone git://github.com/wiredtiger/wiredtiger.git</span><br><span class="line"></span><br><span class="line">$cd wiredtiger/</span><br><span class="line"></span><br><span class="line">$git checkout -b mongodb-4.4 origin/mongodb-4.4</span><br></pre></td></tr></table></figure>
-
-<p>（2）安装相关编译工具</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#采用brew安装</span><br><span class="line">$brew install autoconf automake libtool swig</span><br></pre></td></tr></table></figure>
-
-<p>（3）开始编译</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">$./autogen.sh</span><br><span class="line"></span><br><span class="line">#mac下查看JAVA_HOME的命令为：</span><br><span class="line">$/usr/libexec/java_home</span><br><span class="line"></span><br><span class="line">#**编辑生成的configure文件，</span><br><span class="line">17620行开始，替换</span><br><span class="line"></span><br><span class="line">case &quot;$host_os&quot; in</span><br><span class="line">        darwin*)        _JTOPDIR=`echo &quot;$_JTOPDIR&quot; | sed -e &apos;s:/[^/]*$::&apos;`</span><br><span class="line">                        _JINC=&quot;$_JTOPDIR/Headers&quot;;;</span><br><span class="line">        *)              _JINC=&quot;$_JTOPDIR/include&quot;;;</span><br><span class="line">esac</span><br><span class="line"></span><br><span class="line">为</span><br><span class="line"></span><br><span class="line">case &quot;$host_os&quot; in</span><br><span class="line">        *)              _JINC=&quot;$_JTOPDIR/include&quot;;;</span><br><span class="line">esac</span><br><span class="line"></span><br><span class="line">$./configure --enable-java --enable-python</span><br><span class="line"></span><br><span class="line">#开始编译</span><br><span class="line">$make</span><br><span class="line"></span><br><span class="line">#安装相关库文件到/usr/local/</span><br><span class="line">$make install</span><br></pre></td></tr></table></figure>
-
-<p>（4）采用idea建立一个maven工程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">#wiredtiger安装之后，java的jar包和jni本地库的位置为：</span><br><span class="line">$ls /usr/local/share/java/wiredtiger-3.2.0/</span><br><span class="line">libwiredtiger_java.0.dylib libwiredtiger_java.dylib   wiredtiger.jar</span><br><span class="line">libwiredtiger_java.a       libwiredtiger_java.la</span><br><span class="line"></span><br><span class="line">编辑idea的工程，引入对应的jar包</span><br><span class="line">Project Settings -&gt; Libraries</span><br><span class="line"></span><br><span class="line">另外，运行测试程序时，还需要加入jni本地库的路径，idea的jvm运行参数重加入：</span><br><span class="line">-Djava.library.path=/usr/local/share/java/wiredtiger-3.2.0</span><br></pre></td></tr></table></figure>
-
-<p>完整的测试程序如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">import com.wiredtiger.db.*;</span><br><span class="line"></span><br><span class="line">public class Main &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Connection conn;</span><br><span class="line">        Session s;</span><br><span class="line">        Cursor c;</span><br><span class="line"></span><br><span class="line">        try &#123;</span><br><span class="line">            //保证目录是存在的/Users/yuankewei/temp/WT_HOME</span><br><span class="line">            conn = wiredtiger.open(&quot;/Users/yuankewei/temp/WT_HOME&quot;, &quot;create&quot;);</span><br><span class="line">            s = conn.open_session(null);</span><br><span class="line">        &#125; catch (WiredTigerException wte) &#123;</span><br><span class="line">            System.err.println(&quot;WiredTigerException: &quot; + wte);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /*! [access example connection] */</span><br><span class="line">        try &#123;</span><br><span class="line">            /*! [access example table create] */</span><br><span class="line">            //创建了一个table，key是一个String，Value也是一个String</span><br><span class="line">            s.create(&quot;table:t&quot;, &quot;key_format=S,value_format=S&quot;);</span><br><span class="line">            /*! [access example table create] */</span><br><span class="line">            /*! [access example cursor open] */</span><br><span class="line">            c = s.open_cursor(&quot;table:t&quot;, null, null);</span><br><span class="line">            /*! [access example cursor open] */</span><br><span class="line">        &#125; catch (WiredTigerException wte) &#123;</span><br><span class="line">            System.err.println(&quot;WiredTigerException: &quot; + wte);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /*! [access example cursor insert] */</span><br><span class="line">        //插入一个数据</span><br><span class="line">        try &#123;</span><br><span class="line">            c.putKeyString(&quot;foo&quot;);</span><br><span class="line">            c.putValueString(&quot;bar&quot;);</span><br><span class="line">            c.insert();</span><br><span class="line">        &#125; catch (WiredTigerPackingException wtpe) &#123;</span><br><span class="line">            System.err.println(&quot;WiredTigerPackingException: &quot; + wtpe);</span><br><span class="line">        &#125; catch (WiredTigerException wte) &#123;</span><br><span class="line">            System.err.println(&quot;WiredTigerException: &quot; + wte);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        /*! [access example cursor insert] */</span><br><span class="line">        //再插入一行数据</span><br><span class="line">        try &#123;</span><br><span class="line">            c.putKeyString(&quot;foo1&quot;);</span><br><span class="line">            c.putValueByteArray(&quot;bar1&quot;.getBytes());</span><br><span class="line">            c.insert();</span><br><span class="line">        &#125; catch (WiredTigerPackingException wtpe) &#123;</span><br><span class="line">            System.err.println(&quot;WiredTigerPackingException: &quot; + wtpe);</span><br><span class="line">        &#125; catch (WiredTigerException wte) &#123;</span><br><span class="line">            System.err.println(&quot;WiredTigerException: &quot; + wte);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        //根据key查询value</span><br><span class="line">        try &#123;</span><br><span class="line">            c.reset();</span><br><span class="line">            c.putKeyString(&quot;foo1&quot;);</span><br><span class="line">            c.search();</span><br><span class="line">            System.out.println(c.getValueString());</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        /*! [access example cursor insert] */</span><br><span class="line">        /*! [access example cursor list] */</span><br><span class="line">        //遍历数据</span><br><span class="line">        try &#123;</span><br><span class="line">            c.reset();</span><br><span class="line">            while (c.next() == 0) &#123;</span><br><span class="line">                System.out.println(&quot;Got: &quot; + c.getKeyString() + &quot;,   &quot; + new String(c.getValueByteArray()));</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; catch (WiredTigerPackingException wtpe) &#123;</span><br><span class="line">            System.err.println(&quot;WiredTigerPackingException: &quot; + wtpe);</span><br><span class="line">        &#125; catch (WiredTigerException wte) &#123;</span><br><span class="line">            System.err.println(&quot;WiredTigerException: &quot; + wte);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>程序的数据为：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bar1</span><br><span class="line">Got: foo,   bar</span><br><span class="line">Got: foo1,   bar1</span><br></pre></td></tr></table></figure>
-
-
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-          <div class="post-eof"></div>
-        
-      </footer>
-  </div>
-  
-  
-  
-  </article>
-
-    
   </div>
 
   
@@ -699,7 +668,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

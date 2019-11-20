@@ -55,14 +55,20 @@
   };
 </script>
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="韦远科的博客">
-<meta property="og:url" content="http://yoursite.com/tags/数据库/index.html">
+  <meta name="description" content="PodWorkers是最终“同步”pod状态的一块逻辑，“同步”在这里的含义是：确保kubelet所在节点的Pod状态和etcd中的状态一致，该增加的增加，该删除的删除，该更新的更新。 “同步”动作的触发有几个方式：（1）通过文件、apiserver、http方式监听到的变化（2）定时器触发，例如每隔10s PodWorkers的入口是UpdatePod 1234567891011121314ty">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PodWorkers">
+<meta property="og:url" content="http://yoursite.com/2019/11/20/PodWorkers/index.html">
 <meta property="og:site_name" content="韦远科的博客">
+<meta property="og:description" content="PodWorkers是最终“同步”pod状态的一块逻辑，“同步”在这里的含义是：确保kubelet所在节点的Pod状态和etcd中的状态一致，该增加的增加，该删除的删除，该更新的更新。 “同步”动作的触发有几个方式：（1）通过文件、apiserver、http方式监听到的变化（2）定时器触发，例如每隔10s PodWorkers的入口是UpdatePod 1234567891011121314ty">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20191120135846524.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXl1YW5rZQ==,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-11-20T06:00:05.943Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="韦远科的博客">
-  <link rel="canonical" href="http://yoursite.com/tags/数据库/">
+<meta name="twitter:title" content="PodWorkers">
+<meta name="twitter:description" content="PodWorkers是最终“同步”pod状态的一块逻辑，“同步”在这里的含义是：确保kubelet所在节点的Pod状态和etcd中的状态一致，该增加的增加，该删除的删除，该更新的更新。 “同步”动作的触发有几个方式：（1）通过文件、apiserver、http方式监听到的变化（2）定时器触发，例如每隔10s PodWorkers的入口是UpdatePod 1234567891011121314ty">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20191120135846524.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXl1YW5rZQ==,size_16,color_FFFFFF,t_70">
+  <link rel="canonical" href="http://yoursite.com/2019/11/20/PodWorkers/">
 
 
 <script id="page-configurations">
@@ -70,13 +76,13 @@
   CONFIG.page = {
     sidebar: "",
     isHome: false,
-    isPost: false,
+    isPost: true,
     isPage: false,
     isArchive: false
   };
 </script>
 
-  <title>Tag: 数据库 | 韦远科的博客</title>
+  <title>PodWorkers | 韦远科的博客</title>
   <meta name="generator" content="Hexo 3.9.0">
   
 
@@ -169,18 +175,6 @@
 
     
 
-    
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
 </nav>
 </div>
     </header>
@@ -198,60 +192,103 @@
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+      <article itemscope itemtype="http://schema.org/Article">
   
   
   
-  <div class="post-block tag">
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1 class="collection-header">数据库<small>Tag</small>
+  <div class="post-block post">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/20/PodWorkers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="韦远科">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="韦远科的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">PodWorkers
+
+          
         </h1>
-      </div>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              
+                
+              
+
+              <time title="Created: 2019-11-20 13:59:36 / Modified: 14:00:05" itemprop="dateCreated datePublished" datetime="2019-11-20T13:59:36+08:00">2019-11-20</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
+        <p>PodWorkers是最终“同步”pod状态的一块逻辑，<br>“同步”在这里的含义是：确保kubelet所在节点的Pod状态和etcd中的状态一致，该增加的增加，该删除的删除，该更新的更新。</p>
+<p>“同步”动作的触发有几个方式：<br>（1）通过文件、apiserver、http方式监听到的变化<br>（2）定时器触发，例如每隔10s</p>
+<p>PodWorkers的入口是UpdatePod</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">type podWorkers struct &#123;</span><br><span class="line">    // key是pod的ID，value是一个chan，会有一个gorouting监听该chann</span><br><span class="line">    // 死循环一般的处理该Pod上的所有变动</span><br><span class="line">	podUpdates map[types.UID]chan UpdatePodOptions</span><br><span class="line">	</span><br><span class="line">	// 记录每个pod对应的gorouting当前的工作状态</span><br><span class="line">	isWorking map[types.UID]bool</span><br><span class="line">	</span><br><span class="line">	// 每个Pod对应的gorouting处理完相关逻辑之后，会把Pod的ID塞入</span><br><span class="line">	// workQueue。定时器会触发kubelet，kubelet会从workQueue里</span><br><span class="line">	// 获取需要同步的Pod，然后调用PodWorkers的UpdatePod方法，</span><br><span class="line">	// 触发新一轮的同步</span><br><span class="line">	workQueue queue.WorkQueue</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-  
-  
+<p>简单的示意图<br><img src="https://img-blog.csdnimg.cn/20191120135846524.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXl1YW5rZQ==,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 
-  
+    </div>
+
     
-    <div class="collection-year">
-      <h1 class="collection-header">2019</h1>
-    </div>
-  
-
-  <article itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
+    
+    
         
-          <a class="post-title-link" href="/2019/07/29/本地数据库引擎WiredTiger测试记录/" itemprop="url">
-            <span itemprop="name">本地数据库引擎WiredTiger测试记录</span>
-          </a>
+      
+
+      <footer class="post-footer">
+
         
-      </h2>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2019-07-29T18:45:11+08:00"
-              content="2019-07-29">
-          07-29
-        </time>
-      </div>
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/08/符合OCI规范的容器运行时-kubernetes-CRI/" rel="next" title="符合OCI规范的容器运行时 & kubernetes CRI">
+                  <i class="fa fa-chevron-left"></i> 符合OCI规范的容器运行时 & kubernetes CRI
+                </a>
+              
+            </div>
 
-    </header>
-  </article>
+            <span class="post-nav-divider"></span>
 
-
-
-    </div>
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
   </div>
   
   
   
+  </article>
 
-  
-
+  </div>
 
 
           </div>
@@ -270,6 +307,11 @@
 
   <aside class="sidebar">
     <div class="sidebar-inner">
+        
+        
+        
+        
+      
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
